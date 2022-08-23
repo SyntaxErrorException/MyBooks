@@ -9,6 +9,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>MyBooks</title>
+<link rel="stylesheet" href="css/bootstrap.min.css" />
 <link rel="stylesheet" href="css/style.css" />
 </head>
 
@@ -19,12 +20,13 @@
 			type="number" id="currentPage" min="0" value="0">
 		<button id="btn">追加</button>
 	</p>
+	
 	<!-- テーブルをc:forEachで記述する -->
 	<table id="book-table">
+	<c:forEach items="${bookList}" var="book" varStatus="vs">
 		<tr style="height: 20px;">
 			<td id="cover" rowspan="2">
 				<!-- 表紙 -->
-
 			</td>
 			<td id="title">
 				<!-- タイトル -->
@@ -50,6 +52,7 @@
 				<!-- 概要 -->
 			</td>
 		</tr>
+	</c:forEach>
 	</table>
 
 	<!-- テーブル行のテンプレート -->
