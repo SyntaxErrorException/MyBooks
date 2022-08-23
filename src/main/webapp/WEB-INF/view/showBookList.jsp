@@ -10,8 +10,10 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>MyBooks</title>
-<link rel="stylesheet" href="<%= request.getContextPath() %>/css/bootstrap.min.css" />
-<link rel="stylesheet" href="<%= request.getContextPath() %>/css/style.css" />
+<link rel="stylesheet"
+	href="<%= request.getContextPath() %>/css/bootstrap.min.css" />
+<link rel="stylesheet"
+	href="<%= request.getContextPath() %>/css/style.css" />
 </head>
 
 <body>
@@ -21,44 +23,40 @@
 			type="number" id="currentPage" min="0" value="0">
 		<button id="btn">追加</button>
 	</p>
-	
+
 	<!-- テーブルをc:forEachで記述する -->
 	<table id="book-table">
-	<c:forEach items="${bookList}" var="book" varStatus="vs">
-		<tr style="height: 20px;">
-			<td id="cover" rowspan="2">
-				<!-- 表紙 -->
-				<c:out value="${book.cover}" />
-			</td>
-			<td id="title">
-				<!-- タイトル -->
-				<c:out value="${book.title}" />
-			</td>
-			<td id="authors">
-				<!-- 著者 -->
-				<c:out value="${book.authors}" />
-			</td>
-			<td id="pageCount">
-				<!-- ページ数 -->
-				<c:out value="${book.pageCount}" />
-			</td>
-			<td><input type="number" id="pageRead" min="0" value="<c:out value="${book.pageRead}" />">
-				<button id="update">更新</button></td>
-			<td id="progress">
-				<!-- 進捗 -->
-				進捗:<fmt:formatNumber value="${book.pageRead / book.pageCount * 100}" pattern="000" />%
-			</td>
-			<td>
-				<button id="finished">読了</button>
-			</td>
-		</tr>
-		<tr>
-			<td id="description" colspan="6">
-				<!-- 概要 -->
-				<c:out value="${book.description}" />
-			</td>
-		</tr>
-	</c:forEach>
+		<c:forEach items="${bookList}" var="book" varStatus="vs">
+			<tr style="height: 20px;">
+				<td id="cover" rowspan="2">
+					<!-- 表紙 --> <c:out value="${book.cover}" />
+				</td>
+				<td id="title">
+					<!-- タイトル --> <c:out value="${book.title}" />
+				</td>
+				<td id="authors">
+					<!-- 著者 --> <c:out value="${book.authors}" />
+				</td>
+				<td id="pageCount">
+					<!-- ページ数 --> <c:out value="${book.pageCount}" />
+				</td>
+				<td><input type="number" id="pageRead" min="0"
+					value="<c:out value="${book.pageRead}" />">
+					<button id="update">更新</button></td>
+				<td id="progress">
+					<!-- 進捗 --> 進捗:<fmt:formatNumber
+						value="${book.pageRead / book.pageCount * 100}" />%
+				</td>
+				<td>
+					<button id="finished">読了</button>
+				</td>
+			</tr>
+			<tr>
+				<td id="description" colspan="6">
+					<!-- 概要 --> <c:out value="${book.description}" />
+				</td>
+			</tr>
+		</c:forEach>
 	</table>
 
 	<!-- テーブル行のテンプレート -->
@@ -94,11 +92,11 @@
 
 	<script src="<%= request.getContextPath() %>/js/jquery-3.6.0.min.js"></script>
 	<script>
-                /**
-                 * Book List テーブルの1冊分を生成する関数
-                 * @param title,authors,pageCount,discription,smallTumbnailといったプロパティを持つ
-                 * @return 本のデータが入ったtr要素
-                 */
+    /**
+     * Book List テーブルの1冊分を生成する関数
+     * @param プロパティとしてtitle,authors,pageCount,discription,smallTumbnailを持つ
+     * @return 本のデータが入ったtr要素
+     */
                 function createRow(book) {
                     // テンプレートの要素(1冊分のHTML)を複製
                     const clone = $($('#book-row-template').html());
@@ -107,7 +105,7 @@
                         clone.find('#cover').append('<img src=\"' + book.items[0]
                             .volumeInfo.imageLinks.smallThumbnail + '\" />');
                     } catch {
-                        clone.find('#cover').append('<img src=\"images/e_others_500.png\" />');
+                        clone.find('#cover').append('<img src=\"<%= request.getContextPath() %>/images/e_others_500.png\" />');
                     }
                     clone.find('#title').append(book.items[0].volumeInfo.title);
                     clone.find('#authors').append(book.items[0].volumeInfo.authors);
@@ -130,6 +128,7 @@
                     });
                     return clone;
                 }
+                
                 // メインの処理
                 $(document).ready(function () {
                     $('#btn').click(function () {
@@ -141,7 +140,7 @@
                             dateType: JSON
                         })//ajax
                             .done(function (res) {
-                                // 取得されたデータの確認
+                                // 取得したデータの確認
                                 console.log(res);
 
                                 if (res.totalItems == 1) {
@@ -155,8 +154,6 @@
                                 $('#inputISBN').after('<p>データの取得に失敗しました。</p>')
                             });//fail
                     });//click
-
-                    //削除関数
 
                 });//ready
             </script>
