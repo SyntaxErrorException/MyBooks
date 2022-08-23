@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <!DOCTYPE html>
 <html lang="ja">
 
@@ -27,21 +28,25 @@
 		<tr style="height: 20px;">
 			<td id="cover" rowspan="2">
 				<!-- 表紙 -->
+				<c:out value="${book.cover}" />
 			</td>
 			<td id="title">
 				<!-- タイトル -->
-
+				<c:out value="${book.title}" />
 			</td>
 			<td id="authors">
 				<!-- 著者 -->
+				<c:out value="${book.authors}" />
 			</td>
 			<td id="pageCount">
 				<!-- ページ数 -->
+				<c:out value="${book.pageCount}" />
 			</td>
-			<td><input type="number" id="pageRead" min="0">
+			<td><input type="number" id="pageRead" min="0" value="<c:out value="${book.pageRead}" />">
 				<button id="update">更新</button></td>
 			<td id="progress">
 				<!-- 進捗 -->
+				進捗:<fmt:formatNumber value="${book.pageRead / book.pageCount * 100}" pattern="000" />%
 			</td>
 			<td>
 				<button id="finished">読了</button>
@@ -50,6 +55,7 @@
 		<tr>
 			<td id="description" colspan="6">
 				<!-- 概要 -->
+				<c:out value="${book.description}" />
 			</td>
 		</tr>
 	</c:forEach>
@@ -86,7 +92,7 @@
 		</tr>
 	</template>
 
-	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	<script src="<%= request.getContextPath() %>/js/jquery-3.6.0.min.js"></script>
 	<script>
                 /**
                  * Book List テーブルの1冊分を生成する関数
