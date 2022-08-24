@@ -18,11 +18,11 @@
 
 <body>
 	<h1>Book List</h1>
-	<p id="inputISBN">
-		ISBN: <input type="text" id="isbnCode"> 現在のページ: <input
-			type="number" id="currentPage" min="0" value="0">
+	<div>
+		ISBN: <input type="text" id="isbnCode">
+		現在のページ: <input type="number" id="currentPage" min="0" value="0">
 		<button id="btn">追加</button>
-	</p>
+	</div>
 
 	<!-- テーブルをc:forEachで記述する -->
 	<table id="book-table">
@@ -100,12 +100,13 @@
                 function createRow(book) {
                     // テンプレートの要素(1冊分のHTML)を複製
                     const clone = $($('#book-row-template').html());
+                    
                     // 行ごとのtd要素にデータを追加
                     try {
                         clone.find('#cover').append('<img src=\"' + book.items[0]
                             .volumeInfo.imageLinks.smallThumbnail + '\" />');
                     } catch {
-                        clone.find('#cover').append('<img src=\"<%= request.getContextPath() %>/images/e_others_500.png\" />');
+                    	clone.find('#cover').append('');
                     }
                     clone.find('#title').append(book.items[0].volumeInfo.title);
                     clone.find('#authors').append(book.items[0].volumeInfo.authors);
@@ -126,6 +127,7 @@
                         $(this).parent().next().text(
                             '進捗:' + Math.round($(this).prev().val() / $(this).parent().prev().text() * 100) + '%');
                     });
+                    
                     return clone;
                 }
                 
@@ -146,6 +148,25 @@
                                 if (res.totalItems == 1) {
                                     // テーブルに行を追加
                                     $('#book-table').prepend(createRow(res));
+                                    
+                                    let cover = '';
+                                    try {
+                                    	cover = res.items[0].volumeInfo.imageLinks.smallThumbnail;
+                                    } catch {
+                                    	cover = '';
+                                    }
+                                    
+                                    const data = {
+                                    	title: res.items[0].volumeInfo.title,
+                                    	authors: res.items[0].volumeInfo.authors[0],
+                                    	pageCount: res.items[0].volumeInfo.pageCount,
+                                    	description: res.items[0].volumeInfo.description,
+                                    	isbn: $('#isbnCode').val(),
+                                    	readPage: $('#currentPage').val(),
+                                    	cover: cover
+                                    };
+                                    
+                                    sendToServlet(data);
                                 } else {
                                     alert('totalItems:' + res.totalItems + '\r\n検索結果が複数のため追加できません。');
                                 }
@@ -154,9 +175,22 @@
                                 $('#inputISBN').after('<p>データの取得に失敗しました。</p>')
                             });//fail
                     });//click
-
+                    
                 });//ready
-            </script>
-</body>
+                    
+                function sendToServlet(dataToSend){
+                   	  $.ajax({
+	                     url: 'http://localhost:8080/MyBooks/members/showBookList',
+	                     type: 'POST',
+	                     data: dataToSend
+	                  })//ajax
+	                 .done(function(res){
 
+	                  })//done                    	
+	                  .fail(function(){
+	                	  
+	                  });//fail
+                }
+	</script>
+</body>
 </html>
