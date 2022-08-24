@@ -32,16 +32,15 @@ public class ShowBookList extends HttpServlet {
 		String description = request.getParameter("description");
 		String cover = request.getParameter("cover");
 		String isbn = request.getParameter("isbn");
-		String readPage = request.getParameter("readPage");
+		String bookmark = request.getParameter("bookmark");
 		
 		System.out.println("タイトル：" + title);
 		System.out.println("著者：" + authors);
 		System.out.println("ページ数：" + pageCount);
 		System.out.println("概要：" + description);
-		System.out.println("概要の文字数" + description.length());
 		System.out.println("表紙：" + cover);
 		System.out.println("ISBN：" + isbn);
-		System.out.println("現在のページ：" + readPage);
+		System.out.println("現在のページ：" + bookmark);
 		
 		/*
 		//DAOの生成
@@ -49,7 +48,7 @@ public class ShowBookList extends HttpServlet {
 		//DTOの生成
 		Book book = new Book();
 		//リクエストスコープから取得した値をDTOにセット
-		// FIXME ユーザIDを修正
+		// FIXME Userクラスを作成後、setUserId(1)を修正
 		book.setUserId(1);
 		book.setTitle(title);
 		book.setAuthors(authors);
@@ -59,7 +58,6 @@ public class ShowBookList extends HttpServlet {
 		book.setIsbn(Integer.parseInt(isbn));
 		book.setReadPage(Integer.parseInt(readPage));
 		try {
-			
 			bookDao.insert(book);
 		} catch (Exception e) {
 			// TODO 自動生成された catch ブロック

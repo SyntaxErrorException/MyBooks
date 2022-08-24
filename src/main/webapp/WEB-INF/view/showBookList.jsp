@@ -40,14 +40,17 @@
 				<td id="pageCount">
 					<!-- ページ数 --> <c:out value="${book.pageCount}" />
 				</td>
-				<td><input type="number" id="pageRead" min="0"
-					value="<c:out value="${book.pageRead}" />">
+				<td>
+					<!-- ブックマーク -->
+					<input type="number" id="bookmark" min="0"
+					value="<c:out value="${book.bookmark}" />">
 					<button id="update">更新</button></td>
 				<td id="progress">
 					<!-- 進捗 --> 進捗:<fmt:formatNumber
 						value="${book.pageRead / book.pageCount * 100}" />%
 				</td>
 				<td>
+					<!-- 読了 -->
 					<button id="finished">読了</button>
 				</td>
 			</tr>
@@ -74,12 +77,15 @@
 			<td id="pageCount">
 				<!-- ページ数 -->
 			</td>
-			<td><input type="number" id="pageRead" min="0">
+			<td>
+				<!-- ブックマーク -->
+				<input type="number" id="bookmark" min="0">
 				<button id="update">更新</button></td>
 			<td id="progress">
 				<!-- 進捗 -->
 			</td>
 			<td>
+				<!-- 読了 -->
 				<button id="finished">読了</button>
 			</td>
 		</tr>
@@ -101,28 +107,42 @@
                     // テンプレートの要素(1冊分のHTML)を複製
                     const clone = $($('#book-row-template').html());
                     
-                    // 行ごとのtd要素にデータを追加
+                    /**
+                    *表紙用の変数にサムネイルを格納
+                    *古い本の場合、プロパティが存在しないのでtry-catchで囲む
+                    */
                     try {
                         clone.find('#cover').append('<img src=\"' + book.items[0]
                             .volumeInfo.imageLinks.smallThumbnail + '\" />');
                     } catch {
                     	clone.find('#cover').append('');
                     }
+                    
+                    //共著の場合に対応するための処理
+                    let authorsList = '';
+                    if (book.items[0].volumeInfo.authors.length > 1) {
+                    	book.items[0].volumeInfo.authors.forEach(e => authorsList += e + '・');
+                    	authorsList = authorsList.replace(/・$/,"");
+                    } else {
+                        authorsList = book.items[0].volumeInfo.authors[0];
+                    }
+                    
+                    // td要素にデータを追加
                     clone.find('#title').append(book.items[0].volumeInfo.title);
-                    clone.find('#authors').append(book.items[0].volumeInfo.authors);
+                    clone.find('#authors').append(authorsList);
                     clone.find('#pageCount').append(book.items[0].volumeInfo.pageCount);
                     clone.find('#progress').append('進捗:' +
                         Math.round($('#currentPage').val() / book.items[0].volumeInfo.pageCount * 100) + '%');
                     clone.find('#description').append(book.items[0].volumeInfo.description);
-                    clone.find('#pageRead').val($('#currentPage').val());
+                    clone.find('#bookmark').val($('#currentPage').val());
 
-                    //行を削除
+                    // 読了した本を削除
                     clone.find('#finished').click(function () {
                         $(this).parent().parent().next().remove();
                         $(this).parent().parent().remove();
                     });
 
-                    //進捗を更新
+                    // 進捗を更新
                     clone.find('#update').click(function () {
                         $(this).parent().next().text(
                             '進捗:' + Math.round($(this).prev().val() / $(this).parent().prev().text() * 100) + '%');
@@ -140,7 +160,7 @@
                             url: endpoint,
                             type: 'GET',
                             dateType: JSON
-                        })//ajax
+                        })// ajax
                             .done(function (res) {
                                 // 取得したデータの確認
                                 console.log(res);
@@ -148,21 +168,35 @@
                                 if (res.totalItems == 1) {
                                     // テーブルに行を追加
                                     $('#book-table').prepend(createRow(res));
-                                    
+
+                                    /**
+                                    *表紙用の変数にサムネイルを格納
+                                    *古い本の場合、プロパティが存在しないのでtry-catchで囲む
+                                    */
                                     let cover = '';
                                     try {
                                     	cover = res.items[0].volumeInfo.imageLinks.smallThumbnail;
                                     } catch {
-                                    	cover = '';
+                                    	cover = 'No image';
                                     }
-                                    
+
+                                    //共著の場合に対応するための処理
+                                    let authorsList = '';
+                                    if (res.items[0].volumeInfo.authors.length > 1) {
+                                    	res.items[0].volumeInfo.authors.forEach(e => authorsList += e + '・');
+                                    	authorsList = authorsList.replace(/・$/,"");
+                                    } else {
+                                        authorsList = res.items[0].volumeInfo.authors[0];
+                                    }
+
+                                    //JSONからJavaScriptオブジェクトへ変換
                                     const data = {
                                     	title: res.items[0].volumeInfo.title,
-                                    	authors: res.items[0].volumeInfo.authors[0],
+                                    	authors: authorsList,
                                     	pageCount: res.items[0].volumeInfo.pageCount,
                                     	description: res.items[0].volumeInfo.description,
-                                    	isbn: $('#isbnCode').val(),
-                                    	readPage: $('#currentPage').val(),
+                                    	isbn: isbnCode,
+                                    	bookmark: $('#currentPage').val(),
                                     	cover: cover
                                     };
                                     
@@ -175,7 +209,6 @@
                                 $('#inputISBN').after('<p>データの取得に失敗しました。</p>')
                             });//fail
                     });//click
-                    
                 });//ready
                     
                 function sendToServlet(dataToSend){
