@@ -169,9 +169,9 @@
                                     // テーブルに行を追加
                                     $('#book-table').prepend(createRow(res));
 
-                                    /**
-                                    *表紙用の変数にサムネイルを格納
-                                    *古い本の場合、プロパティが存在しないのでtry-catchで囲む
+                                    /*
+                                    表紙用の変数にサムネイルを格納
+                                    古い本の場合、プロパティが存在しないのでtry-catchで囲む
                                     */
                                     let cover = '';
                                     try {
@@ -218,10 +218,10 @@
 	                     data: dataToSend
 	                  })//ajax
 	                 .done(function(res){
-
+	                	  console.log("成功");
 	                  })//done                    	
 	                  .fail(function(){
-	                	  
+	                	  console.log("失敗");
 	                  });//fail
                 }
 	</script>

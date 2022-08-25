@@ -14,6 +14,6 @@ public class Book {
 	private String authors;
 	private Integer pageCount;
 	private String description;
-	private Integer isbn;
-	private Integer readPage;
+	private String isbn;
+	private Integer bookmark;
 }

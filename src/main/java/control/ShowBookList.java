@@ -8,6 +8,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import dao.BookDao;
+import dao.DaoFactory;
+import domain.Book;
+
 /**
  * Servlet implementation class ShowBookList
  */
@@ -42,7 +46,7 @@ public class ShowBookList extends HttpServlet {
 		System.out.println("ISBN：" + isbn);
 		System.out.println("現在のページ：" + bookmark);
 		
-		/*
+		try {
 		//DAOの生成
 		BookDao bookDao = DaoFactory.createBookDao();
 		//DTOの生成
@@ -55,15 +59,15 @@ public class ShowBookList extends HttpServlet {
 		book.setPageCount(Integer.parseInt(pageCount));
 		book.setDescription(description);
 		book.setCover(cover);
-		book.setIsbn(Integer.parseInt(isbn));
-		book.setReadPage(Integer.parseInt(readPage));
-		try {
-			bookDao.insert(book);
+		book.setIsbn(isbn);
+		book.setBookmark(Integer.parseInt(bookmark));
+		
+		bookDao.insert(book);
 		} catch (Exception e) {
 			// TODO 自動生成された catch ブロック
 			e.printStackTrace();
 		}
-		*/
+		
 		
 	}
 

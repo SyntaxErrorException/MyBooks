@@ -23,7 +23,7 @@ public class BookDaoImpl implements BookDao{
 		try(Connection con = ds.getConnection()){
 			//SQL文の生成
 			String sql = "insert into books values ("
-					+ "?,?,?,?,?,?,?,?)";
+					+ "NULL,?,?,?,?,?,?,?,?)";
 			//SQL文の実行準備
 			PreparedStatement stmt = con.prepareStatement(sql);
 			stmt.setObject(1,book.getUserId(),Types.INTEGER);
@@ -32,9 +32,9 @@ public class BookDaoImpl implements BookDao{
 			stmt.setObject(4,book.getPageCount(),Types.INTEGER);
 			stmt.setString(5,book.getDescription());
 			stmt.setString(6,book.getCover());
-			stmt.setObject(7,book.getIsbn(),Types.INTEGER);
-			stmt.setObject(8,book.getReadPage(),Types.INTEGER);
-			//SQL分の実行
+			stmt.setObject(7,book.getIsbn());
+			stmt.setObject(8,book.getBookmark(),Types.INTEGER);
+			//SQL文の実行
 			stmt.executeUpdate();
 		}catch (Exception e){
 			throw e;
