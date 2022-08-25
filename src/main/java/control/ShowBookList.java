@@ -1,6 +1,7 @@
 package control;
 
 import java.io.IOException;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -20,16 +21,33 @@ public class ShowBookList extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
+	 *      response)
 	 */
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		try {
+			// DAOを生成
+			BookDao bookDao = DaoFactory.createBookDao();
+			// DTO(User)を生成
+
+			// userIdを引数にしてselectメソッドを実行
+			// FIXME Userを作成してから修正。それまではベタ打ちで対応。
+			List<Book> bookList = bookDao.findById(1);
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		// 一覧にフォワード
 		request.getRequestDispatcher("/WEB-INF/view/showBookList.jsp").forward(request, response);
 	}
 
 	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
+	 *      response)
 	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 		String title = request.getParameter("title");
 		String authors = request.getParameter("authors");
 		String pageCount = request.getParameter("pageCount");
@@ -37,7 +55,7 @@ public class ShowBookList extends HttpServlet {
 		String cover = request.getParameter("cover");
 		String isbn = request.getParameter("isbn");
 		String bookmark = request.getParameter("bookmark");
-		
+
 		System.out.println("タイトル：" + title);
 		System.out.println("著者：" + authors);
 		System.out.println("ページ数：" + pageCount);
@@ -45,30 +63,29 @@ public class ShowBookList extends HttpServlet {
 		System.out.println("表紙：" + cover);
 		System.out.println("ISBN：" + isbn);
 		System.out.println("現在のページ：" + bookmark);
-		
+
 		try {
-		//DAOの生成
-		BookDao bookDao = DaoFactory.createBookDao();
-		//DTOの生成
-		Book book = new Book();
-		//リクエストスコープから取得した値をDTOにセット
-		// FIXME Userクラスを作成後、setUserId(1)を修正
-		book.setUserId(1);
-		book.setTitle(title);
-		book.setAuthors(authors);
-		book.setPageCount(Integer.parseInt(pageCount));
-		book.setDescription(description);
-		book.setCover(cover);
-		book.setIsbn(isbn);
-		book.setBookmark(Integer.parseInt(bookmark));
-		
-		bookDao.insert(book);
+			// DAOの生成
+			BookDao bookDao = DaoFactory.createBookDao();
+			// DTOの生成
+			Book book = new Book();
+			// リクエストスコープから取得した値をDTOにセット
+			// FIXME Userクラスを作成後、setUserId(1)を修正
+			book.setUserId(1);
+			book.setTitle(title);
+			book.setAuthors(authors);
+			book.setPageCount(Integer.parseInt(pageCount));
+			book.setDescription(description);
+			book.setCover(cover);
+			book.setIsbn(isbn);
+			book.setBookmark(Integer.parseInt(bookmark));
+
+			bookDao.insert(book);
 		} catch (Exception e) {
 			// TODO 自動生成された catch ブロック
 			e.printStackTrace();
 		}
-		
-		
+
 	}
 
 }
