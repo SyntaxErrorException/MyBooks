@@ -1,5 +1,7 @@
 package dao;
 
+import java.util.List;
+
 import domain.Book;
 
 public interface BookDao {
@@ -9,5 +11,7 @@ public interface BookDao {
 
 	void delete(Book book) throws Exception;
 
-	Book select(Book book) throws Exception;
+	Book select(Integer id) throws Exception;
+
+	List<Book> findById(Integer id) throws Exception;
 }
