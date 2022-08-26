@@ -29,11 +29,14 @@ public class ShowBookList extends HttpServlet {
 		try {
 			// DAOを生成
 			BookDao bookDao = DaoFactory.createBookDao();
-			// DTO(User)を生成
-
-			// userIdを引数にしてselectメソッドを実行
-			// FIXME Userを作成してから修正。それまではベタ打ちで対応。
-			List<Book> bookList = bookDao.findById(1);
+			// セッションスコープからuserを取得
+			// TODO User作成後にコメントアウトを解除
+			//User user = request.getSession().getAttribute("user");
+			
+			// userIdを引数にしてfindByIdメソッドを実行
+			// FIXME Userを作成後に修正。それまではIDはベタ打ちで対応。
+			List<Book> bookList = bookDao.findById(1);// 1 -> user.getId()
+			request.setAttribute("bookList", bookList);
 			
 		} catch (Exception e) {
 			e.printStackTrace();
