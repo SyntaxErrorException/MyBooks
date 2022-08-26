@@ -9,7 +9,7 @@ public interface BookDao {
 
 	void update(Book book) throws Exception;
 
-	void delete(Book book) throws Exception;
+	void delete(Integer id) throws Exception;
 
 	Book select(Integer id) throws Exception;
 

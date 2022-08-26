@@ -51,9 +51,19 @@ public class BookDaoImpl implements BookDao{
 	}
 
 	@Override
-	public void delete(Book book) throws Exception {
-		// TODO 自動生成されたメソッド・スタブ
-		
+	public void delete(Integer id) throws Exception {
+		// try-catch コネクションを確立
+		try (Connection con = ds.getConnection()) {
+			// SQL文テンプレートの作成
+			String sql = "DELETE FROM books WHERE id=?";
+			// SQL文の準備
+			PreparedStatement stmt = con.prepareStatement(sql);
+			stmt.setInt(1, id);
+			// SQL文の実行
+			stmt.executeUpdate();
+		}catch (Exception e) {
+			throw e;
+		}
 	}
 
 	@Override

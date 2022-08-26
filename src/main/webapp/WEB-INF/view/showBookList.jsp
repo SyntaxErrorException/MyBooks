@@ -48,11 +48,11 @@
 					<button id="update">更新</button></td>
 				<td id="progress">
 					<!-- 進捗 --> 進捗:<fmt:formatNumber
-						value="${book.bookmark / book.pageCount * 100}" />%
+						value="${book.bookmark / book.pageCount * 100}" pattern="000" />%
 				</td>
 				<td>
 					<!-- 読了 -->
-					<button id="finished">読了</button>
+					<button id="finished" onclick="finished(<c:out value="${book.id}"/>)">読了</button>
 				</td>
 			</tr>
 			<tr>
@@ -81,13 +81,13 @@
 			<td>
 				<!-- ブックマーク -->
 				<input type="number" id="bookmark" min="0">
-				<button id="update">更新</button></td>
+				<button id="update" onclick="update(<c:out value="${book.id}"/>)">更新</button></td>
 			<td id="progress">
 				<!-- 進捗 -->
 			</td>
 			<td>
 				<!-- 読了 -->
-				<button id="finished">読了</button>
+				<button id="finished" onclick="finished(<c:out value="${book.id}"/>)">読了</button>
 			</td>
 		</tr>
 		<tr>
@@ -99,6 +99,23 @@
 
 	<script src="<%= request.getContextPath() %>/js/jquery-3.6.0.min.js"></script>
 	<script>
+	// 読了ボタンクリックで実行
+	function finished(id){
+        $(this).parent().parent().next().remove();
+        $(this).parent().parent().remove();
+        
+        //レコード削除のサーブレットへ誘導
+        window.location.href = '/MyBooks/members/finished?id=' + id;
+	}
+	
+	// 更新ボタンクリックで実行
+	function update(id){
+		$(this).parent().next().text(
+          '進捗:' + Math.round($(this).prev().val() / $(this).parent().prev().text() * 100) + '%');
+		
+		//レコード更新のサーブレットへ誘導
+	}
+	
     /**
      * Book List テーブルの1冊分を生成する関数
      * @param プロパティとしてtitle,authors,pageCount,discription,smallTumbnailを持つ

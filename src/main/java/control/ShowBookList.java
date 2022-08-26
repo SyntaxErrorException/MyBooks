@@ -31,10 +31,10 @@ public class ShowBookList extends HttpServlet {
 			BookDao bookDao = DaoFactory.createBookDao();
 			// セッションスコープからuserを取得
 			// TODO User作成後にコメントアウトを解除
-			//User user = request.getSession().getAttribute("user");
+			//User user = (User)request.getSession().getAttribute("user");
 			
 			// userIdを引数にしてfindByIdメソッドを実行
-			// FIXME Userを作成後に修正。それまではIDはベタ打ちで対応。
+			// FIXME Userを作成後に修正。それまではベタ打ちIDで対応。
 			List<Book> bookList = bookDao.findById(1);// 1 -> user.getId()
 			request.setAttribute("bookList", bookList);
 			
