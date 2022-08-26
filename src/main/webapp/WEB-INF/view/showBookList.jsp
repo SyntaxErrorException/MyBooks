@@ -45,10 +45,10 @@
 					<!-- ブックマーク -->
 					<input type="number" id="bookmark" min="0"
 					value="<c:out value="${book.bookmark}" />">
-					<button id="update">更新</button></td>
+					<button id="update" onclick="update(<c:out value="${book.id += ','}"/>$(this).prev().val())">更新</button></td>
 				<td id="progress">
 					<!-- 進捗 --> 進捗:<fmt:formatNumber
-						value="${book.bookmark / book.pageCount * 100}" pattern="000" />%
+						value="${book.bookmark / book.pageCount * 100}" pattern="##0" />%
 				</td>
 				<td>
 					<!-- 読了 -->
@@ -109,11 +109,9 @@
 	}
 	
 	// 更新ボタンクリックで実行
-	function update(id){
-		$(this).parent().next().text(
-          '進捗:' + Math.round($(this).prev().val() / $(this).parent().prev().text() * 100) + '%');
-		
+	function update(id,num){
 		//レコード更新のサーブレットへ誘導
+		window.location.href = '/MyBooks/members/update?id=' + id + '&page=' + num;
 	}
 	
     /**
@@ -158,6 +156,7 @@
                     clone.find('#finished').click(function () {
                         $(this).parent().parent().next().remove();
                         $(this).parent().parent().remove();
+                        window.location.href = '/MyBooks/members/finished?id=' + id;
                     });
 
                     // 進捗を更新
@@ -165,6 +164,7 @@
                         $(this).parent().next().text(
                             '進捗:' + Math.round($(this).prev().val() / $(this).parent().prev().text() * 100) + '%');
                     });
+                    
                     
                     return clone;
                 }

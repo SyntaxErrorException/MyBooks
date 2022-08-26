@@ -7,7 +7,7 @@ import domain.Book;
 public interface BookDao {
 	void insert(Book book) throws Exception;
 
-	void update(Book book) throws Exception;
+	void update(Integer id,Integer bookmark) throws Exception;
 
 	void delete(Integer id) throws Exception;
 

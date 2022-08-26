@@ -12,26 +12,28 @@ import dao.BookDao;
 import dao.DaoFactory;
 
 /**
- * Servlet implementation class Finished
+ * Servlet implementation class Update
  */
-@WebServlet("/members/finished")
-public class Finished extends HttpServlet {
+@WebServlet("/members/update")
+public class Update extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-       
+
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		try {
-		//DAOの生成
+		// DAOの生成
 		BookDao bookDao = DaoFactory.createBookDao();
-		//finishedメソッドの実行
-			bookDao.delete(Integer.parseInt(request.getParameter("id")));
+		// updateメソッドの実行
+			bookDao.update(Integer.parseInt(request.getParameter("id")),
+					Integer.parseInt(request.getParameter("page")));
 		} catch (Exception e) {
+			// TODO 自動生成された catch ブロック
 			e.printStackTrace();
 		}
-		//一覧ページにリダイレクト
-		//削除完了ページは作らない
+		// 一覧ページに戻る
 		response.sendRedirect(request.getContextPath() + "/members/showBookList");
 	}
+
 }

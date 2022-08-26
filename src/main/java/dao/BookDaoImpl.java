@@ -45,9 +45,20 @@ public class BookDaoImpl implements BookDao{
 	}
 
 	@Override
-	public void update(Book book) throws Exception {
-		// TODO 自動生成されたメソッド・スタブ
-		
+	public void update(Integer id ,Integer bookmark) throws Exception {
+		// try-catch コネクションを確立
+		try (Connection con = ds.getConnection()){
+			// SQL文のひな形を作成
+			String sql = "UPDATE books SET bookmark=? WHERE id=?";
+			// SQL文の準備
+			PreparedStatement stmt = con.prepareStatement(sql);
+			stmt.setInt(1, bookmark);
+			stmt.setInt(2, id);
+			//SQL文の実行
+			stmt.executeUpdate();
+		} catch (Exception e) {
+			throw e;
+		}
 	}
 
 	@Override
