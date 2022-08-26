@@ -18,18 +18,19 @@
 
 <body>
 	<h1>Book List</h1>
-	<div>
+	<p>
 		ISBN: <input type="text" id="isbnCode">
 		現在のページ: <input type="number" id="currentPage" min="0" value="0">
 		<button id="btn">追加</button>
-	</div>
+	</p>
 
 	<!-- テーブルをc:forEachで記述する -->
 	<table id="book-table">
 		<c:forEach items="${bookList}" var="book" varStatus="vs">
 			<tr style="height: 20px;">
 				<td id="cover" rowspan="2">
-					<!-- 表紙 --> <c:out value="${book.cover}" />
+					<!-- 表紙 -->
+					<img src="<c:out value="${book.cover}" />" alt="BookCover" />
 				</td>
 				<td id="title">
 					<!-- タイトル --> <c:out value="${book.title}" />
@@ -47,7 +48,7 @@
 					<button id="update">更新</button></td>
 				<td id="progress">
 					<!-- 進捗 --> 進捗:<fmt:formatNumber
-						value="${book.pageRead / book.pageCount * 100}" />%
+						value="${book.bookmark / book.pageCount * 100}" />%
 				</td>
 				<td>
 					<!-- 読了 -->

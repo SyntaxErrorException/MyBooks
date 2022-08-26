@@ -85,8 +85,8 @@ public class BookDaoImpl implements BookDao{
 	public List<Book> findById(Integer id) throws Exception {
 		List<Book> bookList = new ArrayList<>();
 		try (Connection con = ds.getConnection()) {
-			String sql = "SELECT * FROM book_db WHERE user_id = ? "
-					+ "ORDER BY going_to_bed DESC";
+			String sql = "SELECT * FROM books WHERE user_id = ? "
+					+ "ORDER BY id DESC";
 			PreparedStatement stmt = con.prepareStatement(sql);
 			stmt.setObject(1, id);
 			ResultSet rs = stmt.executeQuery();
