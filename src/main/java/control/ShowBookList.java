@@ -35,6 +35,7 @@ public class ShowBookList extends HttpServlet {
 			
 			// userIdを引数にしてfindByIdメソッドを実行
 			// FIXME Userを作成後に修正。それまではベタ打ちIDで対応。
+
 			List<Book> bookList = bookDao.findById(1);// 1 -> user.getId()
 			request.setAttribute("bookList", bookList);
 			
