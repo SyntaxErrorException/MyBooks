@@ -19,8 +19,8 @@
 <body>
 	<h1>Book List</h1>
 	<p>
-		ISBN: <input type="text" id="isbnCode">
-		現在のページ: <input type="number" id="currentPage" min="0" value="0">
+		ISBN: <input type="text" id="isbnCode" autofocus>
+		現在のページ: <input type="number" id="currentPage" min="0">
 		<button id="btn">追加</button>
 	</p>
 
@@ -63,7 +63,7 @@
 		</c:forEach>
 	</table>
 
-	<!-- テーブル行のテンプレート -->
+	<!-- テーブル行のテンプレート開始 -->
 	<template id="book-row-template">
 		<tr style="height: 20px;">
 			<td id="cover" rowspan="2">
@@ -81,13 +81,13 @@
 			<td>
 				<!-- ブックマーク -->
 				<input type="number" id="bookmark" min="0">
-				<button id="update" onclick="update(<c:out value="${book.id}"/>)">更新</button></td>
+				<button id="update">更新</button></td>
 			<td id="progress">
 				<!-- 進捗 -->
 			</td>
 			<td>
 				<!-- 読了 -->
-				<button id="finished" onclick="finished(<c:out value="${book.id}"/>)">読了</button>
+				<button id="finished">読了</button>
 			</td>
 		</tr>
 		<tr>
@@ -96,7 +96,8 @@
 			</td>
 		</tr>
 	</template>
-
+	<!-- テーブル行のテンプレート終了 -->
+	
 	<script src="<%= request.getContextPath() %>/js/jquery-3.6.0.min.js"></script>
 	<script>
 	// 読了ボタンクリックで実行
@@ -156,7 +157,6 @@
                     clone.find('#finished').click(function () {
                         $(this).parent().parent().next().remove();
                         $(this).parent().parent().remove();
-                        window.location.href = '/MyBooks/members/finished?id=' + id;
                     });
 
                     // 進捗を更新
@@ -195,10 +195,10 @@
                                     try {
                                     	cover = res.items[0].volumeInfo.imageLinks.smallThumbnail;
                                     } catch {
-                                    	cover = 'No image';
+                                    	cover = 'NO IMAGE';
                                     }
 
-                                    //共著の場合に対応するための処理
+                                    //共著の場合の著者名に対応するための処理
                                     let authorsList = '';
                                     if (res.items[0].volumeInfo.authors.length > 1) {
                                     	res.items[0].volumeInfo.authors.forEach(e => authorsList += e + '・');
@@ -217,6 +217,12 @@
                                     	bookmark: $('#currentPage').val(),
                                     	cover: cover
                                     };
+                                    
+                                    // 入力フォームをクリア
+                                    $('#isbnCode').val("");
+                                    $('#currentPage').val("");
+                                    
+                                    window.location.reload();
                                     
                                     sendToServlet(data);
                                 } else {
