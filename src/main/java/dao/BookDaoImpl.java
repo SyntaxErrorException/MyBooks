@@ -86,7 +86,7 @@ public class BookDaoImpl implements BookDao{
 		Book book = new Book();
 		try (Connection con = ds.getConnection()) {
 			//SQL文を作成して実行
-			String sql = "SELECT * FROM book_db WHERE user_id=?";
+			String sql = "SELECT * FROM books WHERE user_id=?";
 			PreparedStatement stmt = con.prepareStatement(sql);
 			stmt.setInt(1, id);
 			ResultSet rs = stmt.executeQuery();
