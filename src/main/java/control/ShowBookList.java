@@ -75,6 +75,18 @@ public class ShowBookList extends HttpServlet {
 			Book book = new Book();
 			// リクエストスコープから取得した値をDTOにセット
 			// FIXME Userクラスを作成後、setUserId(1)を修正
+			
+			/*これはJSPですべきことか？
+			// ISBN重複チェック
+			List<Book> bookList = bookDao.findById(book.getUserId());
+			for (Book b : bookList) {
+				if (b.getIsbn() == book.getIsbn()) {
+					String msg = "登録済みのISBNです。\nもう1冊、登録しますか？";
+					break;
+				};
+			}
+			*/
+			
 			book.setUserId(1);
 			book.setTitle(title);
 			book.setAuthors(authors);

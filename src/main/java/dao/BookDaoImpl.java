@@ -24,6 +24,7 @@ public class BookDaoImpl implements BookDao{
 	@Override
 	public void insert(Book book) throws Exception {
 		try(Connection con = ds.getConnection()){
+			
 			//SQL文の生成
 			String sql = "insert into books values ("
 					+ "NULL,?,?,?,?,?,?,?,?)";
@@ -109,6 +110,7 @@ public class BookDaoImpl implements BookDao{
 			String sql = "SELECT * FROM books WHERE user_id = ? "
 					+ "ORDER BY id DESC";
 			PreparedStatement stmt = con.prepareStatement(sql);
+			// FIXME ユーザIDベタ打ち修正必須
 			stmt.setObject(1, id);
 			ResultSet rs = stmt.executeQuery();
 			while (rs.next()) {

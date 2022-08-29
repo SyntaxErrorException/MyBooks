@@ -2,6 +2,7 @@
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <!DOCTYPE html>
 <html lang="ja">
 
@@ -26,6 +27,7 @@
 
 	<!-- テーブルをc:forEachで記述する -->
 	<table id="book-table">
+		<c:set var="listSize" value="${fn:length(bookList)}" />
 		<c:forEach items="${bookList}" var="book" varStatus="vs">
 			<tr style="height: 20px;">
 				<td id="cover" rowspan="2">
@@ -60,6 +62,9 @@
 					<!-- 概要 --> <c:out value="${book.description}" />
 				</td>
 			</tr>
+			<div id="${registeredIsbn += vs.index}" style="display:none;">
+				<c:out value="${book.isbn}"/>
+			</div>
 		</c:forEach>
 	</table>
 
@@ -169,9 +174,22 @@
                     return clone;
                 }
                 
-                // メインの処理
+                // 追加ボタン押下時の処理
                 $(document).ready(function () {
                     $('#btn').click(function () {
+                    	// ISBNの重複を調査する
+                    	const bookList = [];
+                    	for (int i = 0; i < listSize; i++) {
+	                    	if ($('#registeredIsbn' + i) == $('#isbnCode').val()) {
+		                    	// ISBNの重複があれば確認アラートを表示する
+	                    		const answer = confirm("登録済みのISBNです。\r\nもう１冊、登録しますか？");
+	                    		if (!answer) {
+	                    			break;
+	                    		}
+	                    	}
+                    	}
+                    	
+                    	// 「はい」なら処理を続行する
                         const isbnCode = $('#isbnCode').val();
                         const endpoint = 'https://www.googleapis.com/books/v1/volumes?q=isbn:' + isbnCode;
                         $.ajax({
