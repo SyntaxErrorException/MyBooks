@@ -1,6 +1,11 @@
+body {
+	width: 90%;
+	margin: auto;
+}
+
 #book-table {
     border-collapse: collapse;
-    width: 85%;
+    width: 100%;
 }
 
 #book-table th,

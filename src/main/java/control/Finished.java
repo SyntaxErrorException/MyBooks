@@ -31,7 +31,6 @@ public class Finished extends HttpServlet {
 			e.printStackTrace();
 		}
 		//一覧ページにリダイレクト
-		//削除完了ページは作らない
 		response.sendRedirect(request.getContextPath() + "/members/showBookList");
 	}
 }
