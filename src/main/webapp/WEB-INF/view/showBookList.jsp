@@ -131,7 +131,7 @@
 			<td id="description" colspan="6">
 				<!-- 概要 -->
 			</td>
-				<td id="registeredIsbn" class="registeredIsbn" style="display: none;">
+			<td id="registeredIsbn" class="registeredIsbn" style="display: none;">
 			</td>
 		</tr>
 	</template>
@@ -152,6 +152,7 @@
         console.log('更新完了');
 	}
 	
+	// 登録済みのISBNとの重複をチェックする
 	function duplication(){
     	const registeredIsbn = document.getElementsByClassName('registeredIsbn');
     	if (registeredIsbn.length > 0) {
@@ -292,6 +293,8 @@
                                     
                                     sendToBookList(objJS);
                                     
+                                    location.reload();
+                                    
                                 } else {
                                     alert('totalItems:' + res.totalItems + '\r\n検索結果が1冊ではないので追加できません。');
                                 }
@@ -303,8 +306,8 @@
                     
                 	// 現在進行中の本のみ表示する
                 	$('#switchView').click(function(){
+	                	const readingPage = document.getElementsByClassName('readingPage');
                 		// ブックマークのクラス属性を使って現在進行中か否かを判断する
-                		const readingPage = document.getElementsByClassName('readingPage');
                 		let i = 1;
                 		for (let r of readingPage){
                 			if (r.value == 0) {
