@@ -33,68 +33,46 @@
 	<table id="book-table">
 		<c:set var="listSize" value="${fn:length(bookList)}" />
 		<c:forEach items="${bookList}" var="book" varStatus="vs">
-			<tr class="record" style="height: 20px;">
-				<td id="cover" rowspan="2">
-					<div class="record">
-						<!-- 表紙 -->
-						<img src="<c:out value="${book.cover}" />" alt="BOOK COVER" />
-					</div>
+			<tr class="${'record' += vs.index}" style="height: 20px;">
+				<td class="cover" rowspan="2">
+					<!-- 表紙 --> <img src="<c:out value="${book.cover}" />"
+					alt="BOOK COVER" />
 				</td>
-				<td id="title">
-					<div class="record">
-						<!-- タイトル -->
-						<c:out value="${book.title}" />
-					</div>
+				<td class="title">
+					<!-- タイトル --> <c:out value="${book.title}" />
 				</td>
-				<td id="authors">
-					<div class="record">
-						<!-- 著者 -->
-						<c:out value="${book.authors}" />
-					</div>
+				<td class="authors">
+					<!-- 著者 --> <c:out value="${book.authors}" />
 				</td>
-				<td id="pageCount">
-					<div class="record">
-						<!-- ページ数 -->
-						<c:out value="${book.pageCount}" />
-					</div>
+				<td class="pageCount">
+					<!-- ページ数 --> <c:out value="${book.pageCount}" />
 				</td>
 				<td>
 					<div class="record">
 						<!-- ブックマーク -->
 						<input type="number" class="readingPage" min="0"
 							value="<c:out value="${book.bookmark}" />">
-						<button id="update"
+						<button class="update"
 							onclick="update(<c:out value="${book.id += ','}"/>$(this).prev().val())">更新</button>
 					</div>
 				</td>
-				<td id="progress">
-					<div class="record">
-						<!-- 進捗 -->
-						進捗:
-						<fmt:formatNumber value="${book.bookmark / book.pageCount * 100}"
-							pattern="##0" />
-						%
-					</div>
+				<td class="prg">
+					<!-- 進捗 --> 進捗: <fmt:formatNumber
+						value="${book.bookmark / book.pageCount * 100}" pattern="##0" />
+					%
 				</td>
 				<td>
-					<div class="record">
-						<!-- 読了 -->
-						<button id="finished"
-							onclick="finished(<c:out value="${book.id}"/>)">読了</button>
-					</div>
+					<!-- 読了 -->
+					<button class="finished"
+						onclick="finished(<c:out value="${book.id}"/>)">読了</button>
 				</td>
 			</tr>
-			<tr class="record">
-				<td id="description" colspan="6">
-					<div class="record">
-						<!-- 概要 -->
-						<c:out value="${book.description}" />
-					</div>
+			<tr class="${'record' += vs.index}">
+				<td class="description" colspan="6">
+					<!-- 概要 --> <c:out value="${book.description}" />
 				</td>
 				<td class="registeredIsbn" style="display: none;">
-					<div class="record">
-						<c:out value="${book.isbn}" />
-					</div>
+					<c:out value="${book.isbn}" />
 				</td>
 			</tr>
 		</c:forEach>
@@ -116,7 +94,7 @@
 				<!-- ページ数 -->
 			</td>
 			<td>
-				<!-- ブックマーク --> <input type="number" id="bookmark" min="0">
+				<!-- ブックマーク --> <input type="number" id="bookmark" class=readingPage min="0">
 				<button id="update">更新</button>
 			</td>
 			<td id="progress">
@@ -131,8 +109,7 @@
 			<td id="description" colspan="6">
 				<!-- 概要 -->
 			</td>
-			<td id="registeredIsbn" class="registeredIsbn" style="display: none;">
-			</td>
+			<td id=isbn class="registeredIsbn" style="display: none;"></td>
 		</tr>
 	</template>
 	<!-- テーブル行のテンプレート終了 -->
@@ -157,17 +134,8 @@
     	const registeredIsbn = document.getElementsByClassName('registeredIsbn');
     	if (registeredIsbn.length > 0) {
         	for (let isbn of registeredIsbn) {
-            	if (isbn.textContent.trim() == $('#isbnCode').val()) {
-                	// ISBNの重複があれば確認アラートを表示する
-            		const answer = confirm("登録済みのISBNです。\r\nもう１冊、登録しますか？");
-            		if (!answer) {
-                		//「いいえ」なら入力欄をクリアして中断
-                		$('#isbnCode').val('');
-                		$('#currentPage').val('0');
-                		return false;
-            		} else {
-                		return true;
-                	}
+            	if (isbn.textContent.trim() === $('#isbnCode').val()) {
+                	return true;
             	}
         	}
         }
@@ -189,15 +157,16 @@
                     try {
                         clone.find('#cover').append('<img src=\"' + book.items[0]
                             .volumeInfo.imageLinks.smallThumbnail + '\" />');
-                    } catch {
-                    	clone.find('#cover').append('');
+                    } catch(e) {
+                    	clone.find('#cover').append('<img src=\" + <%=request.getContextPath()%> + images/e_others_500.png\" />');
+                    	console.log(e);
                     }
                     
                     //共著の場合に対応するための処理
                     let authorsList = '';
                     if (book.items[0].volumeInfo.authors.length > 1) {
                     	book.items[0].volumeInfo.authors.forEach(e => authorsList += e + '・');
-                    	authorsList = authorsList.replace(/・$/,"");
+                    	authorsList = authorsList.replace(/・$/,'');
                     } else {
                         authorsList = book.items[0].volumeInfo.authors[0];
                     }
@@ -235,8 +204,15 @@
                 $(document).ready(function () {
                     $('#btn').click(function () {
                     	// 登録済みISBNとの重複を調査する
-                    	if (!duplication()){
-                    		return;
+                    	if (duplication()){
+                        	// ISBNの重複があれば確認アラートを表示する
+                    		const agree = confirm("登録済みのISBNです。\r\nもう１冊、登録しますか？");
+                    		if (!agree) {
+                        		//「いいえ」なら入力欄をクリアして中断
+                        		$('#isbnCode').val('');
+                        		$('#currentPage').val('0');
+                        		return;
+                    		}
                     	}
                     	
                     	// 「はい」なら一冊分のデータを追加する
@@ -251,7 +227,7 @@
                                 // 取得したデータの確認
                                 console.log(res);
 
-                                if (res.totalItems == 1) {
+                                if (Number(res.totalItems) === 1) {
                                     // テーブルに行を追加
                                     $('#book-table').prepend(createRow(res));
 
@@ -293,10 +269,10 @@
                                     
                                     sendToBookList(objJS);
                                     
-                                    location.reload();
+                                    //location.reload();
                                     
                                 } else {
-                                    alert('totalItems:' + res.totalItems + '\r\n検索結果が1冊ではないので追加できません。');
+                                    alert('totalItems:' + res.totalItems + '\r\n検索結果が複数あります。入力を見直してください。');
                                 }
                             })//done
                             .fail(function () {
@@ -308,18 +284,15 @@
                 	$('#switchView').click(function(){
 	                	const readingPage = document.getElementsByClassName('readingPage');
                 		// ブックマークのクラス属性を使って現在進行中か否かを判断する
-                		let i = 1;
-                		for (let r of readingPage){
-                			if (r.value == 0) {
+                		for (let i = 0; i < readingPage.length; i++){
+                			if (Number(readingPage[i].value) === 0) {
                 				//表示を消す
-                				$('tr:nth-child(' + i + ')').css('display','none');
-                				$('tr:nth-child(' + i + ')').next().css('display','none');
+                				$('.record' + i).css('display','none');
                 				$('#switchView').css('display','none');
                 				$('#reload').css('display','inline');
                 			}
-                			i += 2;
                 		}
-                		console.log('表示完了');
+                		console.log('現在進行中表示完了');
                 	});
                     
                     //すべて表示
@@ -327,7 +300,8 @@
                     	window.location.reload();
         				$('#reload').css('display','none');
                     	$('#switchView').css('display','inline');
-                    })
+                    	console.log('すべて表示完了');
+                    });
                 });//ready
 
                 // ShowBookListサーブレットにJSONから変換したJSオブジェクトを送る    
