@@ -26,6 +26,7 @@
 			type="number" id="currentPage" min="0" value="0">
 		<button id="btn">追加</button>
 		<button id="switchView">現在進行中</button>
+		<button id="reload" style="display: none;">すべて表示</button>
 	</p>
 
 	<!-- テーブルをc:forEachで記述する -->
@@ -306,16 +307,24 @@
                 		const readingPage = document.getElementsByClassName('readingPage');
                 		let i = 1;
                 		for (let r of readingPage){
-                			console.log(r.value);
                 			if (r.value == 0) {
-                				//CSSで表示を消す
+                				//表示を消す
                 				$('tr:nth-child(' + i + ')').css('display','none');
-                				$('tr:nth-child(' + ++i + ')').css('display','none');
+                				$('tr:nth-child(' + i + ')').next().css('display','none');
+                				$('#switchView').css('display','none');
+                				$('#reload').css('display','inline');
                 			}
-                			i++;
+                			i += 2;
                 		}
                 		console.log('表示完了');
                 	});
+                    
+                    //すべて表示
+                    $('#reload').click(function(){
+                    	window.location.reload();
+        				$('#reload').css('display','none');
+                    	$('#switchView').css('display','inline');
+                    })
                 });//ready
 
                 // ShowBookListサーブレットにJSONから変換したJSオブジェクトを送る    

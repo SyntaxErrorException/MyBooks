@@ -86,6 +86,8 @@ public class ShowBookList extends HttpServlet {
 
 			bookDao.insert(book);
 			
+			this.doGet(request, response);
+			
 		} catch (Exception e) {
 			// TODO 自動生成された catch ブロック
 			e.printStackTrace();
