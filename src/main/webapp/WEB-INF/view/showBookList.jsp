@@ -25,40 +25,37 @@
 		ISBN: <input type="text" id="isbnCode" autofocus> 現在のページ: <input
 			type="number" id="currentPage" min="0" value="0">
 		<button id="btn">追加</button>
-		<button id="switchView">現在進行中</button>
-		<button id="reload" style="display: none;">すべて表示</button>
+		<button id="readingBooks">現在進行中</button>
+		<button id="allBooks" style="display: none;">すべて表示</button>
 	</p>
 
 	<!-- テーブルをc:forEachで記述する -->
 	<table id="book-table">
-		<c:set var="listSize" value="${fn:length(bookList)}" />
+		
 		<c:forEach items="${bookList}" var="book" varStatus="vs">
-			<tr class="${'record' += vs.index}" style="height: 20px;">
-				<td class="cover" rowspan="2">
-					<!-- 表紙 --> <img src="<c:out value="${book.cover}" />"
-					alt="BOOK COVER" />
+			<tr class="${'record' += vs.index} row1">
+				<td class="cover cell1" rowspan="2">
+					<!-- 表紙 --> <img src="${book.cover}" alt="BOOK COVER" />
 				</td>
-				<td class="title">
+				<td class="title cell1">
 					<!-- タイトル --> <c:out value="${book.title}" />
 				</td>
-				<td class="authors">
+				<td class="authors cell1">
 					<!-- 著者 --> <c:out value="${book.authors}" />
 				</td>
-				<td class="pageCount">
+				<td class="pageCount cell1">
 					<!-- ページ数 --> <c:out value="${book.pageCount}" />
 				</td>
 				<td>
-					<div class="record">
-						<!-- ブックマーク -->
-						<input type="number" class="readingPage" min="0"
-							value="<c:out value="${book.bookmark}" />">
-						<button class="update"
-							onclick="update(<c:out value="${book.id += ','}"/>$(this).prev().val())">更新</button>
-					</div>
+					<!-- ブックマーク -->
+					<input type="number" class="readingPage cell" min="0"
+						value="<c:out value="${book.bookmark}" />">
+					<button class="update"
+						onclick="update(<c:out value="${book.id += ','}"/>$(this).prev().val())">更新</button>
 				</td>
-				<td class="prg">
+				<td class="Progress cell1">
 					<!-- 進捗 --> 進捗: <fmt:formatNumber
-						value="${book.bookmark / book.pageCount * 100}" pattern="##0" />
+						value="${book.bookmark / book.pageCount * 100}" pattern="##0.0" />
 					%
 				</td>
 				<td>
@@ -67,11 +64,11 @@
 						onclick="finished(<c:out value="${book.id}"/>)">読了</button>
 				</td>
 			</tr>
-			<tr class="${'record' += vs.index}">
-				<td class="description" colspan="6">
+			<tr class="${'record' += vs.index} row2">
+				<td class="description cell2" colspan="6">
 					<!-- 概要 --> <c:out value="${book.description}" />
 				</td>
-				<td class="registeredIsbn" style="display: none;">
+				<td class="registeredIsbn cell2" style="display: none;">
 					<c:out value="${book.isbn}" />
 				</td>
 			</tr>
@@ -158,17 +155,22 @@
                         clone.find('#cover').append('<img src=\"' + book.items[0]
                             .volumeInfo.imageLinks.smallThumbnail + '\" />');
                     } catch(e) {
-                    	clone.find('#cover').append('<img src=\" + <%=request.getContextPath()%> + images/e_others_500.png\" />');
+                        clone.find('#cover').append('<img src="" alt="BOOK COVER"');
                     	console.log(e);
                     }
                     
                     //共著の場合に対応するための処理
                     let authorsList = '';
-                    if (book.items[0].volumeInfo.authors.length > 1) {
-                    	book.items[0].volumeInfo.authors.forEach(e => authorsList += e + '・');
-                    	authorsList = authorsList.replace(/・$/,'');
-                    } else {
-                        authorsList = book.items[0].volumeInfo.authors[0];
+                    try {
+	                    if (book.items[0].volumeInfo.authors.length > 1) {
+	                    	book.items[0].volumeInfo.authors.forEach(e => authorsList += e + '・');
+	                    	authorsList = authorsList.replace(/・$/,'');
+	                    } else {
+	                        authorsList = book.items[0].volumeInfo.authors[0];
+	                    }
+                    } catch(e) {
+                        alert('登録できない書籍です。');
+						console.log(e);
                     }
                     
                     // td要素にデータを追加
@@ -281,25 +283,25 @@
                     });//click
                     
                 	// 現在進行中の本のみ表示する
-                	$('#switchView').click(function(){
+                	$('#readingBooks').click(function(){
 	                	const readingPage = document.getElementsByClassName('readingPage');
                 		// ブックマークのクラス属性を使って現在進行中か否かを判断する
                 		for (let i = 0; i < readingPage.length; i++){
                 			if (Number(readingPage[i].value) === 0) {
                 				//表示を消す
                 				$('.record' + i).css('display','none');
-                				$('#switchView').css('display','none');
-                				$('#reload').css('display','inline');
+                				$('#readingBooks').css('display','none');
+                				$('#allBooks').css('display','inline');
                 			}
                 		}
                 		console.log('現在進行中表示完了');
                 	});
                     
-                    //すべて表示
-                    $('#reload').click(function(){
-                    	window.location.reload();
-        				$('#reload').css('display','none');
-                    	$('#switchView').css('display','inline');
+                    // すべて表示
+                    $('#allBooks').click(function(){
+                        $('tr').removeAttr('style');
+        				$('#allBooks').css('display','none');
+                    	$('#readingBooks').removeAttr('style');
                     	console.log('すべて表示完了');
                     });
                 });//ready
