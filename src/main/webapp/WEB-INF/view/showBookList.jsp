@@ -34,7 +34,7 @@
 		
 		<c:forEach items="${bookList}" var="book" varStatus="vs">
 			<tr class="${'record' += vs.index} row1">
-				<td class="cover cell1" rowspan="2">
+				<td class="cover" rowspan="2" style="width:130px;">
 					<!-- 表紙 --> <img src="${book.cover}" alt="BOOK COVER" />
 				</td>
 				<td class="title cell1">
