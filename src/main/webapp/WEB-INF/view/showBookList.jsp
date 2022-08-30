@@ -105,7 +105,7 @@
 	
 	<script src="<%= request.getContextPath() %>/js/jquery-3.6.0.min.js"></script>
 	<script>
-	// 読了ボタンクリックで実行
+	// 読了ボタンクリックで行を削除する
 	function finished(id){
         $(this).parent().parent().next().remove();
         $(this).parent().parent().remove();
@@ -114,7 +114,7 @@
         window.location.href = '/MyBooks/members/finished?id=' + id;
 	}
 	
-	// 更新ボタンクリックで実行
+	// 更新ボタンクリックで進捗を更新する
 	function update(id,num){
 		//レコード更新のサーブレットへ誘導
 		window.location.href = '/MyBooks/members/update?id=' + id + '&page=' + num;
@@ -166,11 +166,11 @@
 
                     // 進捗を更新
                     clone.find('#update').click(function () {
+                    	const bookmark = $(this).parent().prev().text();
                         $(this).parent().next().text(
-                            '進捗:' + Math.round($(this).prev().val() / $(this).parent().prev().text() * 100) + '%');
+                            '進捗:' + Math.round($(this).prev().val() / bookmark * 100) + '%');
                     });
-                    
-                    
+                                        
                     return clone;
                 }
                 
@@ -198,7 +198,6 @@
 		                    	}
 	                    	}
                         }
-                    	
                     	// 「はい」なら一冊分のデータを追加する
                         const isbnCode = $('#isbnCode').val();
                         const endpoint = 'https://www.googleapis.com/books/v1/volumes?q=isbn:' + isbnCode;
@@ -213,7 +212,7 @@
 
                                 if (res.totalItems == 1) {
                                     // テーブルに行を追加
-                                    // $('#book-table').prepend(createRow(res));
+                                    $('#book-table').prepend(createRow(res));
 
                                     /*
                                     表紙用の変数にサムネイルを格納
@@ -251,7 +250,8 @@
                                     $('#isbnCode').val('');
                                     $('#currentPage').val('');
                                     
-                                    sendToServlet(objJS);
+                                    sendToBookList(objJS);
+                                    window.location.reload();
                                     
                                 } else {
                                     alert('totalItems:' + res.totalItems + '\r\n検索結果が1冊ではないので追加できません。');
@@ -263,18 +263,18 @@
                     });//click
                 });//ready
 
-                // showBookListサーブレットにJSONから変換したJSオブジェクトを送る    
-                function sendToServlet(dataToSend){
+                // ShowBookListサーブレットにJSONから変換したJSオブジェクトを送る    
+                function sendToBookList(bookData){
                    	  $.ajax({
 	                     url: 'http://localhost:8080/MyBooks/members/showBookList',
 	                     type: 'POST',
-	                     data: dataToSend
+	                     data: bookData
 	                  })//ajax
 	                 .done(function(res){
-	                	  console.log("成功");
+	                	  console.log("登録成功");
 	                  })//done                    	
 	                  .fail(function(){
-	                	  console.log("失敗");
+	                	  console.log("登録失敗");
 	                  });//fail
                 }
 	</script>
