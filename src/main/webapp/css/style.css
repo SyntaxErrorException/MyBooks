@@ -4,7 +4,7 @@ body {
 }
 
 #book-table {
-    border-collapse: collapse;
+    border-collapse: separate;
     width: 100%;
 }
 
@@ -16,4 +16,10 @@ body {
 
 .cell1 {
 	height: 20px;
+}
+
+.headLine {
+	position: sticky;
+	top: 0;
+	background: #ccc;
 }

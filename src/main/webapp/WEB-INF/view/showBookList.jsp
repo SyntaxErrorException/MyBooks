@@ -31,7 +31,15 @@
 
 	<!-- テーブルをc:forEachで記述する -->
 	<table id="book-table">
-		
+		<tr class="headLine">
+				<th>表紙</th>
+				<th>タイトル</th>
+				<th>著者</th>
+				<th>ページ</th>
+				<th>ブックマーク</th>
+				<th>進捗</th>
+				<th>読了</th>
+		</tr>
 		<c:forEach items="${bookList}" var="book" varStatus="vs">
 			<tr class="${'record' += vs.index} row1">
 				<td class="cover" rowspan="2" style="width:130px;">
@@ -51,10 +59,12 @@
 					<input type="number" class="readingPage cell" min="0"
 						value="<c:out value="${book.bookmark}" />">
 					<button class="update"
-						onclick="update(<c:out value="${book.id += ','}"/>$(this).prev().val())">更新</button>
+						onclick="update(<c:out value="${book.id += ','}"/>$(this).prev().val())">
+							更新</button>
 				</td>
 				<td class="Progress cell1">
-					<!-- 進捗 --> 進捗: <fmt:formatNumber
+					<!-- 進捗 -->
+					<fmt:formatNumber
 						value="${book.bookmark / book.pageCount * 100}" pattern="##0.0" />
 					%
 				</td>
@@ -74,7 +84,7 @@
 			</tr>
 		</c:forEach>
 	</table>
-
+	
 	<!-- テーブル行のテンプレート開始 -->
 	<template id="book-row-template">
 		<tr style="height: 20px;">
@@ -231,7 +241,7 @@
 
                                 if (Number(res.totalItems) === 1) {
                                     // テーブルに行を追加
-                                    $('#book-table').prepend(createRow(res));
+                                    //$('#book-table').prepend(createRow(res));
 
                                     /*
                                     表紙用の変数にサムネイルを格納
@@ -271,8 +281,6 @@
                                     
                                     sendToBookList(objJS);
                                     
-                                    //location.reload();
-                                    
                                 } else {
                                     alert('totalItems:' + res.totalItems + '\r\n検索結果が複数あります。入力を見直してください。');
                                 }
@@ -281,31 +289,31 @@
                                 $('#inputISBN').after('<p>データの取得に失敗しました。</p>')
                             });//fail
                     });//click
-                    
-                	// 現在進行中の本のみ表示する
-                	$('#readingBooks').click(function(){
-	                	const readingPage = document.getElementsByClassName('readingPage');
-                		// ブックマークのクラス属性を使って現在進行中か否かを判断する
-                		for (let i = 0; i < readingPage.length; i++){
-                			if (Number(readingPage[i].value) === 0) {
-                				//表示を消す
-                				$('.record' + i).css('display','none');
-                				$('#readingBooks').css('display','none');
-                				$('#allBooks').css('display','inline');
-                			}
-                		}
-                		console.log('現在進行中表示完了');
-                	});
-                    
-                    // すべて表示
-                    $('#allBooks').click(function(){
-                        $('tr').removeAttr('style');
-        				$('#allBooks').css('display','none');
-                    	$('#readingBooks').removeAttr('style');
-                    	console.log('すべて表示完了');
-                    });
                 });//ready
+                
+               	// 現在進行中の本のみ表示する
+               	$('#readingBooks').click(function(){
+                	const readingPage = document.getElementsByClassName('readingPage');
+               		// ブックマークのクラス属性を使って現在進行中か否かを判断する
+               		for (let i = 0; i < readingPage.length; i++){
+               			if (Number(readingPage[i].value) === 0) {
+               				//表示を消す
+               				$('.record' + i).css('display','none');
+               				$('#readingBooks').css('display','none');
+               				$('#allBooks').css('display','inline');
+               			}
+               		}
+               		console.log('現在進行中表示完了');
+               	});
 
+                // すべて表示
+                $('#allBooks').click(function(){
+                    $('tr').removeAttr('style');
+    				$('#allBooks').css('display','none');
+                	$('#readingBooks').removeAttr('style');
+                	console.log('すべて表示完了');
+                });
+                
                 // ShowBookListサーブレットにJSONから変換したJSオブジェクトを送る    
                 function sendToBookList(bookData){
                    	  $.ajax({
@@ -314,7 +322,8 @@
 	                     data: bookData
 	                  })//ajax
 	                 .done(function(res){
-	                	  console.log("登録成功");
+	                	 window.location.reload();
+	                	 console.log("登録成功");
 	                  })//done                    	
 	                  .fail(function(){
 	                	  console.log("登録失敗");
