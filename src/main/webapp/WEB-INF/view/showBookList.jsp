@@ -99,6 +99,7 @@
 	*/
 
 	//重複登録の確認
+   	//ISBNの重複があれば確認アラートを表示する
 	function cnfm(obj){
 		$('#description' + obj.id).css('background-color','#faa7ec');
 		setTimeout(function(){
@@ -120,7 +121,7 @@
 	$(document).ready(function () {
 	    $('#btn').click(function () {
 	    	// 登録済みISBNとの重複を調査する
-        	// ISBNの重複があれば確認アラートを表示する
+	    	//「もう1冊、登録しますか？」に「いいえ」ならばリターン
         	const obj = duplication();
 	    	if (obj.bool){
 		    	if (!cnfm(obj)) {
