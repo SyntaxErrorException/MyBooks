@@ -81,10 +81,10 @@
 					</td>
 				</tr>
 				<tr class="${'record' += vs.index} row2">
-					<td class="description cell2" colspan="6">
+					<td id="description${vs.index}" class="description" colspan="6">
 						<!-- 概要 --> <c:out value="${book.description}" />
 					</td>
-					<td class="registeredIsbn cell2" style="display: none;"><c:out
+					<td id="${vs.index}" class="registeredIsbn" style="display: none;"><c:out
 							value="${book.isbn}" /></td>
 				</tr>
 			</tbody>
@@ -97,21 +97,38 @@
 	追加ボタン押下時の処理
 	テーブルに一冊分のデータを追加する
 	*/
+
+	//重複登録の確認
+	function cnfm(obj){
+		$('#description' + obj.id).css('background-color','#faa7ec');
+		setTimeout(function(){
+			    if (!confirm("登録済みのISBNです。\r\nもう１冊、登録しますか？")) {
+		        	//「いいえ」なら入力欄をクリアして中断
+		        	$('#isbnCode').val('');
+		        	$('#currentPage').val('0');
+			    	$('#description' + obj.id).css('background-color','#fff');
+			    	return false;
+			    }else{
+			    	$('#description' + obj.id).css('background-color','#fff');
+			    	return true;
+			    }
+			
+			}
+		,50);//setTimeout
+	}
+	
 	$(document).ready(function () {
 	    $('#btn').click(function () {
 	    	// 登録済みISBNとの重複を調査する
-	    	if (duplication()){
-	        	// ISBNの重複があれば確認アラートを表示する
-	    		const agree = confirm("登録済みのISBNです。\r\nもう１冊、登録しますか？");
-	    		if (!agree) {
-	        		//「いいえ」なら入力欄をクリアして中断
-	        		$('#isbnCode').val('');
-	        		$('#currentPage').val('0');
-	        		return;
-	    		}
+        	// ISBNの重複があれば確認アラートを表示する
+        	const obj = duplication();
+	    	if (obj.bool){
+		    	if (!cnfm(obj)) {
+			    	return;
+		    	}
 	    	}
-	    	
-	    	// 「はい」なら一冊分のデータを追加する
+
+	    	//「はい」なら一冊分のデータを追加する
 	        const isbnCode = $('#isbnCode').val();
 	        const endpoint = 'https://www.googleapis.com/books/v1/volumes?q=isbn:' + isbnCode;
 	        $.ajax({
@@ -173,6 +190,19 @@
 	    });//click
 	});//ready
 
+	// 登録済みのISBNとの重複をチェックする
+	function duplication(){
+    	const registeredIsbn = document.getElementsByClassName('registeredIsbn');
+    	if (registeredIsbn.length > 0) {
+        	for (let isbn of registeredIsbn) {
+            	if (isbn.textContent.trim() === $('#isbnCode').val()) {
+                	const obj = {id: isbn.id,bool: true}
+                	return obj;
+            	}
+        	}
+        }
+	}
+
     // ShowBookListサーブレットにJSONから変換したJSオブジェクトを送る    
     function sendToBookList(bookData){
       $.ajax({
@@ -198,8 +228,8 @@
            pageCount: $(this).parent().prev().text().trim()
           }
 		  const data = update.page / update.pageCount * 100;
-		  const digit = 1;
-		  const progress = data.toFixed(digit);
+		  //const digit = 1;
+		  const progress = data.toFixed(1);
 		  $(this).parent().next().text(progress + '%');
 	      $.ajax({
 	       url: 'http://localhost:8080/MyBooks/members/update',
@@ -234,18 +264,6 @@
 	        console.log("削除失敗");
 	      });
     });
-
-	// 登録済みのISBNとの重複をチェックする
-	function duplication(){
-    	const registeredIsbn = document.getElementsByClassName('registeredIsbn');
-    	if (registeredIsbn.length > 0) {
-        	for (let isbn of registeredIsbn) {
-            	if (isbn.textContent.trim() === $('#isbnCode').val()) {
-                	return true;
-            	}
-        	}
-        }
-	}
 	
 	// 現在進行中の本のみ表示する
    	$('#readingBooks').click(function(){
