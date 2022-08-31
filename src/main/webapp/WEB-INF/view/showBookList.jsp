@@ -199,7 +199,7 @@
           }
 		  const data = update.page / update.pageCount * 100;
 		  const digit = 1;
-		  const progress = parseFloat(data.toFixed(digit));
+		  const progress = data.toFixed(digit);
 		  $(this).parent().next().text(progress + '%');
 	      $.ajax({
 	       url: 'http://localhost:8080/MyBooks/members/update',
@@ -232,14 +232,7 @@
 	        console.log("削除失敗");
 	      });
     });
-    /*
-	// 読了ボタンクリックで行を削除する
-	function finished(id){
-        //レコード削除のサーブレットへ誘導
-        window.location.href = '/MyBooks/members/finished?id=' + id;
-        console.log('削除完了');
-	}
-	*/
+
 	// 登録済みのISBNとの重複をチェックする
 	function duplication(){
     	const registeredIsbn = document.getElementsByClassName('registeredIsbn');
