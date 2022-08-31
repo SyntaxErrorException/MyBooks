@@ -46,8 +46,8 @@
 				<th>読了</th>
 			</tr>
 		</thead>
-		<tbody>
 			<c:forEach items="${bookList}" var="book" varStatus="vs">
+			<tbody>
 				<tr class="${'record' += vs.index} row1">
 					<td class="cover" rowspan="2" style="width: 130px;"><c:set
 							var="imgURL" value="<%=request.getContextPath()%>" /> <!-- 表紙 -->
@@ -66,8 +66,8 @@
 					<td>
 						<!-- ブックマーク --> <input type="number" class="readingPage cell"
 						min="0" value="<c:out value="${book.bookmark}" />">
-						<button type="button" class="update btn btn-info" data-id="${book.id}">
-							更新</button>
+						<button type="button" class="update btn btn-info"
+							data-id="${book.id}">更新</button>
 					</td>
 					<td class="Progress cell1">
 						<!-- 進捗 --> <fmt:formatNumber
@@ -77,8 +77,7 @@
 					<td>
 						<!-- 読了 -->
 						<button type="button" class="finished btn btn-warning"
-							onclick="finished(<c:out value="${book.id}"/>)">
-							読了</button>
+							data-id="${book.id}">読了</button>
 					</td>
 				</tr>
 				<tr class="${'record' += vs.index} row2">
@@ -88,8 +87,8 @@
 					<td class="registeredIsbn cell2" style="display: none;"><c:out
 							value="${book.isbn}" /></td>
 				</tr>
-			</c:forEach>
-		</tbody>
+			</tbody>
+		</c:forEach>
 	</table>
 
 	<script>
@@ -215,19 +214,30 @@
 	      });
     });
 
-    
+    //読了
+    $('.finished').click(function(){
+          const close = {
+           id: $(this).data('id'),
+          }
+          $(this).parents('tbody').remove();
+	      $.ajax({
+	       url: 'http://localhost:8080/MyBooks/members/finished',
+	       type: 'GET',
+	       data: close
+	      })
+	      .done(function(res){
+	        console.log("削除成功");
+	      })                    	
+	      .fail(function(){
+	        console.log("削除失敗");
+	      });
+    });
+    /*
 	// 読了ボタンクリックで行を削除する
 	function finished(id){
         //レコード削除のサーブレットへ誘導
         window.location.href = '/MyBooks/members/finished?id=' + id;
         console.log('削除完了');
-	}
-	/*
-	// 更新ボタンクリックで進捗を更新する
-	function update(id,num){
-		//レコード更新のサーブレットへ誘導
-		window.location.href = '/MyBooks/members/update?id=' + id + '&page=' + num;
-        console.log('更新完了');
 	}
 	*/
 	// 登録済みのISBNとの重複をチェックする

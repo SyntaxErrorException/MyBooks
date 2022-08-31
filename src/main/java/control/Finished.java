@@ -30,7 +30,5 @@ public class Finished extends HttpServlet {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		//一覧ページにリダイレクト
-		response.sendRedirect(request.getContextPath() + "/members/showBookList");
 	}
 }
