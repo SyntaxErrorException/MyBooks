@@ -16,6 +16,7 @@
 <link rel="stylesheet"
 	href="<%=request.getContextPath()%>/css/style.css" />
 <script src="<%=request.getContextPath()%>/js/jquery-3.6.0.min.js"></script>
+<script src="<%=request.getContextPath()%>/js/jquery.tablesorter.min.js"></script>
 <script src="<%=request.getContextPath()%>/js/jquery.easing.min.js"></script>
 </head>
 
@@ -40,6 +41,7 @@
 				<th>ブックマーク</th>
 				<th>進捗
 					<button id="sortDesc" title="実装できてない！">▼</button>
+					<button id="sortAsc" title="実装できてない！" style="display: none;">▲</button>
 				</th>
 				<th>読了</th>
 			</tr>
@@ -238,15 +240,29 @@
     
     // ブックマークを降順でソート
     $('#sortDesc').click(function(){
-
+		$('#sortDesc').css('display','none');
+		$('#sortAsc').css('display','inline');
     });
 
     // ブックマークを昇順でソート
-    $('#sortDesc').click(function(){
-    	
+    $('#sortAsc').click(function(){
+		$('#sortAsc').css('display','none');
+		$('#sortDesc').css('display','inline');
     });
     
-    
+    $(function(){
+    	  $('#bookTable').tablesorter({
+    	    headers: {
+    	      0: { sorter: false}, 
+    	      1: { sorter: "text"},
+    	      2: { sorter: "text"} 
+    	      3: { sorter: "digit"}
+    	      4: { sorter: false}
+    	      5: { sorter: "digit"} 
+    	      6: { sorter: false} 
+    	    }
+    	  });
+    	});
     
  </script>
 </body>
