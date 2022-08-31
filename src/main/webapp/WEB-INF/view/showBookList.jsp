@@ -66,8 +66,7 @@
 					<td>
 						<!-- ブックマーク --> <input type="number" class="readingPage cell"
 						min="0" value="<c:out value="${book.bookmark}" />">
-						<button type="button" class="update btn btn-info"
-							onclick="update(<c:out value="${book.id += ','}"/>$(this).prev().val())">
+						<button type="button" class="update btn btn-info" data-id="${book.id}">
 							更新</button>
 					</td>
 					<td class="Progress cell1">
@@ -191,6 +190,31 @@
         console.log("登録失敗");
       });//fail
     }//sendToBookList
+
+    //更新
+    $('.update').click(function(){
+          const update = {
+           id: $(this).data('id'),
+           page: $(this).prev().val(),
+           pageCount: $(this).parent().prev().text().trim()
+          }
+		  const data = update.page / update.pageCount * 100;
+		  const digit = 1;
+		  const progress = parseFloat(data.toFixed(digit));
+		  $(this).parent().next().text(progress + '%');
+	      $.ajax({
+	       url: 'http://localhost:8080/MyBooks/members/update',
+	       type: 'GET',
+	       data: update
+	      })
+	      .done(function(res){
+	        console.log("更新成功");
+	      })                    	
+	      .fail(function(){
+	        console.log("更新失敗");
+	      });
+    });
+
     
 	// 読了ボタンクリックで行を削除する
 	function finished(id){
@@ -198,14 +222,14 @@
         window.location.href = '/MyBooks/members/finished?id=' + id;
         console.log('削除完了');
 	}
-	
+	/*
 	// 更新ボタンクリックで進捗を更新する
 	function update(id,num){
 		//レコード更新のサーブレットへ誘導
 		window.location.href = '/MyBooks/members/update?id=' + id + '&page=' + num;
         console.log('更新完了');
 	}
-	
+	*/
 	// 登録済みのISBNとの重複をチェックする
 	function duplication(){
     	const registeredIsbn = document.getElementsByClassName('registeredIsbn');
@@ -241,13 +265,13 @@
       	console.log('すべて表示完了');
     });
     
-    // ブックマークを降順でソート
+    // 未実装！ブックマークを降順でソート
     $('#sortDesc').click(function(){
 		$('#sortDesc').css('display','none');
 		$('#sortAsc').css('display','inline');
     });
 
-    // ブックマークを昇順でソート
+    // 未実装！ブックマークを昇順でソート
     $('#sortAsc').click(function(){
 		$('#sortAsc').css('display','none');
 		$('#sortDesc').css('display','inline');
