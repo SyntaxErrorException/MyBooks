@@ -23,15 +23,15 @@
 <body>
 	<h1>Book List</h1>
 	<p>
-		ISBN: <input type="text" id="isbnCode" autofocus> 現在のページ: <input
+		ISBN: <input type="number" id="isbnCode" autofocus> 現在のページ: <input
 			type="number" id="currentPage" min="0" value="0">
-		<button id="btn">追加</button>
-		<button id="readingBooks">現在進行中</button>
-		<button id="allBooks" style="display: none;">すべて表示</button>
+		<button id="btn" type="button" class="btn btn-primary">追加</button>
+		<button id="readingBooks" type="button" class="btn btn-info">現在進行中</button>
+		<button id="allBooks" type="button" class="btn btn-info" style="display: none;">すべて表示</button>
 	</p>
 
 	<!-- テーブルをc:forEachで記述する -->
-	<table id="bookTable">
+	<table id="bookTable" class="table table-striped">
 		<thead>
 			<tr class="headLine">
 				<th>表紙</th>
@@ -66,7 +66,7 @@
 					<td>
 						<!-- ブックマーク --> <input type="number" class="readingPage cell"
 						min="0" value="<c:out value="${book.bookmark}" />">
-						<button class="update"
+						<button type="button" class="update btn btn-info"
 							onclick="update(<c:out value="${book.id += ','}"/>$(this).prev().val())">
 							更新</button>
 					</td>
@@ -77,8 +77,9 @@
 					</td>
 					<td>
 						<!-- 読了 -->
-						<button class="finished"
-							onclick="finished(<c:out value="${book.id}"/>)">読了</button>
+						<button type="button" class="finished btn btn-warning"
+							onclick="finished(<c:out value="${book.id}"/>)">
+							読了</button>
 					</td>
 				</tr>
 				<tr class="${'record' += vs.index} row2">
@@ -129,15 +130,16 @@
 	                    表紙用の変数にサムネイルを格納
 	                    古い本の場合、プロパティが存在しないのでtry-catchで囲む
 	                    */
-	                    let cover = '';
+	                    let cover = null;
 	                    try {
 	                    	cover = res.items[0].volumeInfo.imageLinks.smallThumbnail;
 	                    } catch(e) {
-	                    	cover = null;
 	                    	console.log(e);
 	                    }
 	
-	                    //共著の著者名に対応するための処理
+	                    //共著の著者名を連結
+	                    //"・"を著者名の間に挟む
+	                    //行末の"・"は削除
 	                    let authorsList = '';
 	                    if (res.items[0].volumeInfo.authors.length > 1) {
 	                    	res.items[0].volumeInfo.authors.forEach(e => authorsList += e + '・');
@@ -185,6 +187,7 @@
         console.log("登録成功");
       })//done                    	
       .fail(function(){
+        alert("登録失敗です。");
         console.log("登録失敗");
       });//fail
     }//sendToBookList
@@ -249,20 +252,6 @@
 		$('#sortAsc').css('display','none');
 		$('#sortDesc').css('display','inline');
     });
-    
-    $(function(){
-    	  $('#bookTable').tablesorter({
-    	    headers: {
-    	      0: { sorter: false}, 
-    	      1: { sorter: "text"},
-    	      2: { sorter: "text"} 
-    	      3: { sorter: "digit"}
-    	      4: { sorter: false}
-    	      5: { sorter: "digit"} 
-    	      6: { sorter: false} 
-    	    }
-    	  });
-    	});
     
  </script>
 </body>

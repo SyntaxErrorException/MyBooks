@@ -60,14 +60,6 @@ public class ShowBookList extends HttpServlet {
 		String isbn = request.getParameter("isbn");
 		String bookmark = request.getParameter("bookmark");
 
-		System.out.println("タイトル：" + title);
-		System.out.println("著者：" + authors);
-		System.out.println("ページ数：" + pageCount);
-		System.out.println("概要：" + description);
-		System.out.println("表紙：" + cover);
-		System.out.println("ISBN：" + isbn);
-		System.out.println("現在のページ：" + bookmark);
-
 		try {
 			// DAOの生成
 			BookDao bookDao = DaoFactory.createBookDao();
@@ -86,7 +78,6 @@ public class ShowBookList extends HttpServlet {
 
 			bookDao.insert(book);
 			
-			this.doGet(request, response);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
