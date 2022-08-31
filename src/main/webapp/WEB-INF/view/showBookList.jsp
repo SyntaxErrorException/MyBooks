@@ -219,7 +219,9 @@
           const close = {
            id: $(this).data('id'),
           }
-          $(this).parents('tbody').remove();
+          $(this).parents('tbody').fadeOut(250,function(){
+        	$(this).parents('tbody').remove();
+          });
 	      $.ajax({
 	       url: 'http://localhost:8080/MyBooks/members/finished',
 	       type: 'GET',
