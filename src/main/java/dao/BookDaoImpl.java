@@ -30,14 +30,22 @@ public class BookDaoImpl implements BookDao{
 					+ "NULL,?,?,?,?,?,?,?,?)";
 			//SQL文の実行準備
 			PreparedStatement stmt = con.prepareStatement(sql);
+			String strDes = book.getDescription();
+			//長い概要をカットする
+			if (strDes.length() > 511) {
+				StringBuilder d = new StringBuilder(strDes);
+				d = d.delete(511,d.length());
+				strDes = d.replace(d.length() - 1,d.length(),"…").toString();
+			}
 			stmt.setObject(1,book.getUserId(),Types.INTEGER);
 			stmt.setString(2,book.getTitle());
 			stmt.setString(3,book.getAuthors());
 			stmt.setObject(4,book.getPageCount(),Types.INTEGER);
-			stmt.setString(5,book.getDescription());
+			stmt.setString(5,strDes);
 			stmt.setString(6,book.getCover());
 			stmt.setObject(7,book.getIsbn());
 			stmt.setObject(8,book.getBookmark(),Types.INTEGER);
+			
 			//SQL文の実行
 			stmt.executeUpdate();
 		}catch (Exception e){

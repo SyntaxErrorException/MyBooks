@@ -39,7 +39,7 @@
 				<th>ページ</th>
 				<th>ブックマーク</th>
 				<th>進捗
-					<button id="sortDesc">▼</button>
+					<button id="sortDesc" title="実装できてない！">▼</button>
 				</th>
 				<th>読了</th>
 			</tr>
