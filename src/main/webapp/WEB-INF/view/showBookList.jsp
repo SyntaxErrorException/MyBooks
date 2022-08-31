@@ -43,7 +43,9 @@
 		<c:forEach items="${bookList}" var="book" varStatus="vs">
 			<tr class="${'record' += vs.index} row1">
 				<td class="cover" rowspan="2" style="width:130px;">
-					<!-- 表紙 --> <img src="${book.cover}" alt="BOOK COVER" />
+					<c:set var="imgURL" value="<%= request.getContextPath() %>" />
+					<!-- 表紙 --> <img src="<c:out value="${empty book.cover? '../images/noImage.png': book.cover}"/>"
+						 alt="BOOK COVER" />
 				</td>
 				<td class="title cell1">
 					<!-- タイトル --> <c:out value="${book.title}" />
@@ -84,42 +86,6 @@
 			</tr>
 		</c:forEach>
 	</table>
-	
-	<!-- テーブル行のテンプレート開始 -->
-	<template id="book-row-template">
-		<tr style="height: 20px;">
-			<td id="cover" rowspan="2">
-				<!-- 表紙 -->
-			</td>
-			<td id="title">
-				<!-- タイトル -->
-			</td>
-			<td id="authors">
-				<!-- 著者 -->
-			</td>
-			<td id="pageCount">
-				<!-- ページ数 -->
-			</td>
-			<td>
-				<!-- ブックマーク --> <input type="number" id="bookmark" class=readingPage min="0">
-				<button id="update">更新</button>
-			</td>
-			<td id="progress">
-				<!-- 進捗 -->
-			</td>
-			<td>
-				<!-- 読了 -->
-				<button id="finished">読了</button>
-			</td>
-		</tr>
-		<tr>
-			<td id="description" colspan="6">
-				<!-- 概要 -->
-			</td>
-			<td id=isbn class="registeredIsbn" style="display: none;"></td>
-		</tr>
-	</template>
-	<!-- テーブル行のテンプレート終了 -->
 
 	<script>
 	// 読了ボタンクリックで行を削除する
@@ -160,7 +126,6 @@
                     /**
                     *表紙用の変数にサムネイルを格納
                     *古い本の場合、プロパティが存在しないのでtry-catchで囲む
-                    */
                     try {
                         clone.find('#cover').append('<img src=\"' + book.items[0]
                             .volumeInfo.imageLinks.smallThumbnail + '\" />');
@@ -205,6 +170,7 @@
                         $(this).parent().next().text(
                             '進捗:' + Math.round($(this).prev().val() / bookmark * 100) + '%');
                     });
+                    */
                                         
                     return clone;
                 }
@@ -240,9 +206,6 @@
                                 console.log(res);
 
                                 if (Number(res.totalItems) === 1) {
-                                    // テーブルに行を追加
-                                    //$('#book-table').prepend(createRow(res));
-
                                     /*
                                     表紙用の変数にサムネイルを格納
                                     古い本の場合、プロパティが存在しないのでtry-catchで囲む
@@ -251,7 +214,7 @@
                                     try {
                                     	cover = res.items[0].volumeInfo.imageLinks.smallThumbnail;
                                     } catch(e) {
-                                    	cover = '';
+                                    	cover = null;
                                     	console.log(e);
                                     }
 
