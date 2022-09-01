@@ -16,8 +16,6 @@
 <link rel="stylesheet"
 	href="<%=request.getContextPath()%>/css/style.css" />
 <script src="<%=request.getContextPath()%>/js/jquery-3.6.0.min.js"></script>
-<script src="<%=request.getContextPath()%>/js/jquery.tablesorter.min.js"></script>
-<script src="<%=request.getContextPath()%>/js/jquery.easing.min.js"></script>
 </head>
 
 <body>
@@ -34,25 +32,20 @@
 	<table id="bookTable" class="table table-striped">
 		<thead>
 			<tr class="headLine">
-				<th>表紙</th>
-				<th>タイトル</th>
-				<th>著者</th>
-				<th>ページ</th>
-				<th>ブックマーク</th>
-				<th>進捗
-					<button id="sortDesc" title="実装できてない！">▼</button>
-					<button id="sortAsc" title="実装できてない！" style="display: none;">▲</button>
-				</th>
-				<th>読了</th>
+				<th class="hCover">表紙</th>
+				<th class="hTitle">タイトル</th>
+				<th class="hAuthors">著者</th>
+				<th class="hPageCount">ページ</th>
+				<th class="hBookmark">ブックマーク</th>
+				<th class="hProgress">進捗</th>
+				<th class="hFinished">読了</th>
 			</tr>
 		</thead>
 			<c:forEach items="${bookList}" var="book" varStatus="vs">
 			<tbody>
 				<tr class="${'record' += vs.index} row1">
-					<td class="cover" rowspan="2" style="width: 130px;"><c:set
-							var="imgURL" value="<%=request.getContextPath()%>" /> <!-- 表紙 -->
-						<img
-						src="<c:out value="${empty book.cover? '../images/NoImage.png': book.cover}"/>"
+					<td class="cover" rowspan="2"><!-- 表紙 -->
+						<img src="<c:out value="${empty book.cover? '../images/NoImage.png': book.cover}"/>"
 						alt="BOOK COVER" /></td>
 					<td class="title cell1">
 						<!-- タイトル --> <c:out value="${book.title}" />
@@ -100,25 +93,13 @@
 
 	//重複登録の確認
    	//ISBNの重複があれば確認アラートを表示する
-	function cnfm(o){
-		$('#description' + o.id).css('background-color','#faa7ec');
-		setTimeout(function(){
-			if (confirm("登録済みのISBNです。\r\nもう１冊、登録しますか？")) return;
-		},100);
-		        	//「いいえ」なら入力欄をクリアして中断
-		        	$('#isbnCode').val('');
-		        	$('#currentPage').val('0');
-    	$('#description' + o.id).css('background-color','#fff');
-
-	}
-	
 	$(document).ready(function () {
 	    $('#btn').click(function () {
 	    	// 登録済みISBNとの重複を調査する
 	    	//「もう1冊、登録しますか？」に「いいえ」ならばリターン
-        	const obj = duplication();
-	    	if (obj.bool === true){
-		    	const result = cnfm(obj);
+        	const bool = duplication();
+	    	if (bool){
+		    	const result = confirm("登録済みのISBNです。\r\nもう１冊、登録しますか？");
 		    	if (result === false) return;
 	    	}
 	    	$('#description' + o.id).css('background-color','#fff');
@@ -183,6 +164,18 @@
 	                $('#inputISBN').after('<p>データの取得に失敗しました。</p>')
 	            });//fail
 	    });//click
+	    
+	    //テーブルソート
+		$('#bookTable').tablesorter({
+			  headers: {
+			      0: { sorter: "digit"},
+			      1: { sorter: "digit"},
+			      2: { sorter: "digit"},
+			      3: { sorter: "digit"},
+			      4: { sorter: "digit"},
+			      5: { sorter: "text"}
+				}
+			});
 	});//ready
 
 	// 登録済みのISBNとの重複をチェックする
@@ -191,8 +184,7 @@
     	if (registeredIsbn.length > 0) {
         	for (let isbn of registeredIsbn) {
             	if (isbn.textContent.trim() === $('#isbnCode').val()) {
-                	const obj = {id: isbn.id,bool: true}
-                	return obj;
+                	return true;
             	}
         	}
         }
@@ -244,10 +236,9 @@
           const close = {
            id: $(this).data('id'),
           }
-          $(this).parents('tbody').fadeOut(250,function(){
-        	$(this).parents('tbody').remove();
-          });
-	      $.ajax({
+       	  $(this).parents('tbody').remove();
+
+          $.ajax({
 	       url: 'http://localhost:8080/MyBooks/members/finished',
 	       type: 'GET',
 	       data: close
