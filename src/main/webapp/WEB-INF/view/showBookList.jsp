@@ -100,22 +100,16 @@
 
 	//重複登録の確認
    	//ISBNの重複があれば確認アラートを表示する
-	function cnfm(obj){
-		$('#description' + obj.id).css('background-color','#faa7ec');
+	function cnfm(o){
+		$('#description' + o.id).css('background-color','#faa7ec');
 		setTimeout(function(){
-			    if (!confirm("登録済みのISBNです。\r\nもう１冊、登録しますか？")) {
+			if (confirm("登録済みのISBNです。\r\nもう１冊、登録しますか？")) return;
+		},100);
 		        	//「いいえ」なら入力欄をクリアして中断
 		        	$('#isbnCode').val('');
 		        	$('#currentPage').val('0');
-			    	$('#description' + obj.id).css('background-color','#fff');
-			    	return false;
-			    }else{
-			    	$('#description' + obj.id).css('background-color','#fff');
-			    	return true;
-			    }
-			
-			}
-		,50);//setTimeout
+    	$('#description' + o.id).css('background-color','#fff');
+
 	}
 	
 	$(document).ready(function () {
@@ -123,12 +117,12 @@
 	    	// 登録済みISBNとの重複を調査する
 	    	//「もう1冊、登録しますか？」に「いいえ」ならばリターン
         	const obj = duplication();
-	    	if (obj.bool){
-		    	if (!cnfm(obj)) {
-			    	return;
-		    	}
+	    	if (obj.bool === true){
+		    	const result = cnfm(obj);
+		    	if (result === false) return;
 	    	}
-
+	    	$('#description' + o.id).css('background-color','#fff');
+	    	console.log('here');
 	    	//「はい」なら一冊分のデータを追加する
 	        const isbnCode = $('#isbnCode').val();
 	        const endpoint = 'https://www.googleapis.com/books/v1/volumes?q=isbn:' + isbnCode;
