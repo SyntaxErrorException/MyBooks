@@ -4,14 +4,14 @@ body {
 }
 
 #bookTable {
-    border-collapse: separate;
-    width: 100%;
+	border-collapse: separate;
+	width: 100%;
 }
 
-#bookTable th,tr,td {
-    table-layout: fixed;
-    border: 1px solid #000;
-    padding: 5px 10px;
+#bookTable th, tr, td {
+	table-layout: fixed;
+	border: 1px solid #000;
+	padding: 5px 10px;
 }
 
 .cell1 {
@@ -22,4 +22,49 @@ body {
 	position: sticky;
 	top: 0;
 	background: #ccc;
+}
+
+.hCover {
+	width: 130px;
+}
+
+.hTitle {
+	width: calc(calc(100% -130px)*0.3);
+}
+
+.hAuthors {
+	width: calc(calc(100% -130px)*0.2);
+}
+
+.hPageCount {
+	width: calc(calc(100% -130px)*0.1);
+}
+
+.hBookmark {
+	width: calc(calc(100% -130px)*0.3);
+}
+
+.hProgress {
+	width: calc(calc(100% -130px)*0.2);
+}
+
+.hFinished {
+	width: calc(calc(100% -130px)*0.1);
+}
+
+.pageCount {
+	text-align: center;
+	height: 60px;
+	line-height: 60px;
+}
+
+.readingPage {
+	text-align: center;
+	padding: auto 0;
+}
+
+.Progress {
+	text-align: center;
+	height: 60px;
+	line-height: 60px;
 }

@@ -32,22 +32,20 @@
 	<table id="bookTable" class="table table-striped">
 		<thead>
 			<tr class="headLine">
-				<th>表紙</th>
-				<th>タイトル</th>
-				<th>著者</th>
-				<th>ページ</th>
-				<th>ブックマーク</th>
-				<th>進捗</th>
-				<th>読了</th>
+				<th class="hCover">表紙</th>
+				<th class="hTitle">タイトル</th>
+				<th class="hAuthors">著者</th>
+				<th class="hPageCount">ページ</th>
+				<th class="hBookmark">ブックマーク</th>
+				<th class="hProgress">進捗</th>
+				<th class="hFinished">読了</th>
 			</tr>
 		</thead>
 			<c:forEach items="${bookList}" var="book" varStatus="vs">
 			<tbody>
 				<tr class="${'record' += vs.index} row1">
-					<td class="cover" rowspan="2" style="width: 130px;"><c:set
-							var="imgURL" value="<%=request.getContextPath()%>" /> <!-- 表紙 -->
-						<img
-						src="<c:out value="${empty book.cover? '../images/NoImage.png': book.cover}"/>"
+					<td class="cover" rowspan="2"><!-- 表紙 -->
+						<img src="<c:out value="${empty book.cover? '../images/NoImage.png': book.cover}"/>"
 						alt="BOOK COVER" /></td>
 					<td class="title cell1">
 						<!-- タイトル --> <c:out value="${book.title}" />
