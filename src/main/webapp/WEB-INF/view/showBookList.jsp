@@ -16,8 +16,6 @@
 <link rel="stylesheet"
 	href="<%=request.getContextPath()%>/css/style.css" />
 <script src="<%=request.getContextPath()%>/js/jquery-3.6.0.min.js"></script>
-<script src="<%=request.getContextPath()%>/js/jquery.tablesorter.min.js"></script>
-<script src="<%=request.getContextPath()%>/js/jquery.easing.min.js"></script>
 </head>
 
 <body>
@@ -168,6 +166,18 @@
 	                $('#inputISBN').after('<p>データの取得に失敗しました。</p>')
 	            });//fail
 	    });//click
+	    
+	    //テーブルソート
+		$('#bookTable').tablesorter({
+			  headers: {
+			      0: { sorter: "digit"},
+			      1: { sorter: "digit"},
+			      2: { sorter: "digit"},
+			      3: { sorter: "digit"},
+			      4: { sorter: "digit"},
+			      5: { sorter: "text"}
+				}
+			});
 	});//ready
 
 	// 登録済みのISBNとの重複をチェックする
@@ -237,6 +247,7 @@
 	       data: close
 	      })
 	      .done(function(res){
+	    	location.reload();
 	        console.log("削除成功");
 	      })                    	
 	      .fail(function(){
