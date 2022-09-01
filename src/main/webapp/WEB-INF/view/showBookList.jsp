@@ -100,6 +100,7 @@
 	    $('#btn').click(function () {
 	    	// 登録済みISBNとの重複を調査する
 	    	//「もう1冊、登録しますか？」に「いいえ」ならばリターン
+
         	const bool = duplication();
 	    	if (bool){
 		    	const result = confirm("登録済みのISBNです。\r\nもう１冊、登録しますか？");
