@@ -11,22 +11,34 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>MyBooks</title>
-<link rel="stylesheet"
-	href="<%=request.getContextPath()%>/css/bootstrap.min.css" />
-<link rel="stylesheet"
-	href="<%=request.getContextPath()%>/css/style.css" />
+<link rel="stylesheet" href="<%=request.getContextPath()%>/css/bootstrap.min.css" />
+<link rel="stylesheet" href="<%=request.getContextPath()%>/css/style.css" />
 <script src="<%=request.getContextPath()%>/js/jquery-3.6.0.min.js"></script>
+<script>
+</script>
 </head>
 
 <body>
 	<h1>Book List</h1>
-	<p>
-		ISBN: <input type="number" id="isbnCode" autofocus> 現在のページ: <input
-			type="number" id="currentPage" min="0" value="0">
-		<button id="btn" type="button" class="btn btn-primary">追加</button>
-		<button id="readingBooks" type="button" class="btn btn-info">現在進行中</button>
-		<button id="allBooks" type="button" class="btn btn-info" style="display: none;">すべて表示</button>
-	</p>
+	<div>
+		<p>
+			ISBN: <input type="number" id="isbnCode" autofocus> 現在のページ: <input
+				type="number" id="currentPage" min="0" value="0">
+			<button id="btn" type="button" class="btn btn-primary">追加</button>
+			<button id="readingBooks" type="button" class="btn btn-info">現在進行中</button>
+			<button id="allBooks" type="button" class="btn btn-info" style="display: none;">すべて表示</button>
+		</p>
+	</div>
+	
+	<!-- 本のリストが0件なら読み込み中止 -->
+	<div id="sizeJudgment">
+		<c:if test="${empty bookList}">
+			<h4>本が登録されていません。</h4>
+			<script>
+				window.stop();
+			</script>
+		</c:if>
+	</div>
 
 	<!-- テーブルをc:forEachで記述する -->
 	<table id="bookTable" class="table table-striped">
@@ -83,27 +95,21 @@
 			</tbody>
 		</c:forEach>
 	</table>
-
 	<script>
-
-	/*
-	追加ボタン押下時の処理
-	テーブルに一冊分のデータを追加する
-	*/
-
+	//
+	//追加ボタン押下時の処理
+	//テーブルに一冊分のデータを追加する
 	//重複登録の確認
-   	//ISBNの重複があれば確認アラートを表示する
+	//ISBNの重複があれば確認アラートを表示する
 	$(document).ready(function () {
 	    $('#btn').click(function () {
 	    	// 登録済みISBNとの重複を調査する
 	    	//「もう1冊、登録しますか？」に「いいえ」ならばリターン
-        	const bool = duplication();
+	    	const bool = duplication();
 	    	if (bool){
 		    	const result = confirm("登録済みのISBNです。\r\nもう１冊、登録しますか？");
 		    	if (result === false) return;
 	    	}
-	    	$('#description' + o.id).css('background-color','#fff');
-	    	console.log('here');
 	    	//「はい」なら一冊分のデータを追加する
 	        const isbnCode = $('#isbnCode').val();
 	        const endpoint = 'https://www.googleapis.com/books/v1/volumes?q=isbn:' + isbnCode;
@@ -115,7 +121,7 @@
 	            .done(function (res) {
 	                // 取得したデータの確認
 	                console.log(res);
-	
+
 	                if (Number(res.totalItems) === 1) {
 	                    /*
 	                    表紙用の変数にサムネイルを格納
@@ -127,7 +133,7 @@
 	                    } catch(e) {
 	                    	console.log(e);
 	                    }
-	
+
 	                    //共著の著者名を連結
 	                    //"・"を著者名の間に挟む
 	                    //行末の"・"は削除
@@ -138,7 +144,7 @@
 	                    } else {
 	                        authorsList = res.items[0].volumeInfo.authors[0];
 	                    }
-	
+
 	                    //JSONからJavaScriptオブジェクトへ変換
 	                    const objJS = {
 	                    	title: res.items[0].volumeInfo.title,
@@ -164,20 +170,25 @@
 	                $('#inputISBN').after('<p>データの取得に失敗しました。</p>')
 	            });//fail
 	    });//click
-	    
-	    //テーブルソート
-		$('#bookTable').tablesorter({
-			  headers: {
-			      0: { sorter: "digit"},
-			      1: { sorter: "digit"},
-			      2: { sorter: "digit"},
-			      3: { sorter: "digit"},
-			      4: { sorter: "digit"},
-			      5: { sorter: "text"}
-				}
-			});
 	});//ready
 
+	// ShowBookListサーブレットにJSONから変換したJSオブジェクトを送る    
+	function sendToBookList(bookData){
+	  $.ajax({
+	  	url: 'http://localhost:8080/MyBooks/members/showBookList',
+	   type: 'POST',
+	   data: bookData
+	  })
+	  .done(function(res){
+	    window.location.reload();
+	    console.log("登録成功");
+	  })                    	
+	  .fail(function(){
+	    alert("登録失敗です。");
+	    console.log("登録失敗");
+	  });
+	}//sendToBookList
+		
 	// 登録済みのISBNとの重複をチェックする
 	function duplication(){
     	const registeredIsbn = document.getElementsByClassName('registeredIsbn');
@@ -189,24 +200,7 @@
         	}
         }
 	}
-
-    // ShowBookListサーブレットにJSONから変換したJSオブジェクトを送る    
-    function sendToBookList(bookData){
-      $.ajax({
-      	url: 'http://localhost:8080/MyBooks/members/showBookList',
-       type: 'POST',
-       data: bookData
-      })//ajax
-      .done(function(res){
-        window.location.reload();
-        console.log("登録成功");
-      })//done                    	
-      .fail(function(){
-        alert("登録失敗です。");
-        console.log("登録失敗");
-      });//fail
-    }//sendToBookList
-
+	
     //更新
     $('.update').click(function(){
           const update = {
@@ -215,7 +209,6 @@
            pageCount: $(this).parent().prev().text().trim()
           }
 		  const data = update.page / update.pageCount * 100;
-		  //const digit = 1;
 		  const progress = data.toFixed(1);
 		  $(this).parent().next().text(progress + '%');
 	      $.ajax({
@@ -257,7 +250,7 @@
    		// ブックマークのクラス属性を使って現在進行中か否かを判断する
    		for (let i = 0; i < readingPage.length; i++){
    			if (Number(readingPage[i].value) === 0) {
-   				//表示を消す
+   				//ブックマークの位置が0なら非表示
    				$('.record' + i).css('display','none');
    				$('#readingBooks').css('display','none');
    				$('#allBooks').css('display','inline');

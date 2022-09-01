@@ -37,6 +37,10 @@ public class ShowBookList extends HttpServlet {
 			// FIXME Userを作成後に修正。それまではベタ打ちIDで対応。
 
 			List<Book> bookList = bookDao.findById(1);// 1 -> user.getId()
+			Integer listSize = bookList.size();
+			if (listSize.equals(null)) {
+				request.setAttribute("listSize", listSize);
+			};
 			request.setAttribute("bookList", bookList);
 			
 		} catch (Exception e) {
