@@ -238,16 +238,14 @@
           const close = {
            id: $(this).data('id'),
           }
-          $(this).parents('tbody').fadeOut(250,function(){
-        	$(this).parents('tbody').remove();
-          });
-	      $.ajax({
+       	  $(this).parents('tbody').remove();
+
+          $.ajax({
 	       url: 'http://localhost:8080/MyBooks/members/finished',
 	       type: 'GET',
 	       data: close
 	      })
 	      .done(function(res){
-	    	location.reload();
 	        console.log("削除成功");
 	      })                    	
 	      .fail(function(){
