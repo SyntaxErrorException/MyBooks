@@ -15,7 +15,11 @@
 <link rel="stylesheet" href="<%=request.getContextPath()%>/css/style.css" />
 <script src="<%=request.getContextPath()%>/js/jquery-3.6.0.min.js"></script>
 </head>
-
+<div id="sizeJudgment">
+	<c:if test="${empty bookList}">
+		<% response.sendRedirect("../member/noBook"); %>
+	</c:if>
+</div>
 <body>
 	<h1>Book List</h1>
 	<div id="userInput">
@@ -27,15 +31,6 @@
 			<button id="allBooks" type="button" class="btn btn-info" style="display: none;">すべて表示</button>
 		</p>
 	</div>
-	
-	<!-- 本のリストが0件なら読み込み中止 -->
-	<div id="sizeJudgment">
-		<c:if test="${empty bookList}">
-			<h4>本が登録されていません。</h4>
-			<% response.sendRedirect("../member/noBook"); %>
-		</c:if>
-	</div>
-
 	<!-- テーブルをc:forEachで記述する -->
 	<table id="bookTable" class="table table-striped">
 		<thead>
