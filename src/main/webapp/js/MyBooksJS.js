@@ -130,7 +130,13 @@ $('.finished').click(function(){
         const close = {
         id: $(this).data('id'),
         }
-        $(this).parents('tbody').remove();
+        const tbodyId = this.closest('tbody');
+        if (tbodyId === tbody0) {
+	        $('#bookTable').remove();
+	        $('#userInput').after('<h3>本が登録されていません。</h3>');
+		} else {
+	        $(this).parents('tbody').remove();
+		}
 
         $.ajax({
         url: 'http://localhost:8080/MyBooks/members/finished',
@@ -146,13 +152,18 @@ $('.finished').click(function(){
 });
 
 // 現在進行中の本のみ表示する
+// TODO 作成中
 $('#readingBooks').click(function(){
-    const readingPage = document.getElementsByClassName('readingPage');
-    // ブックマークのクラス属性を使って現在進行中か否かを判断する
-    for (let i = 0; i < readingPage.length; i++){
-        if (Number(readingPage[i].value) === 0) {
+    let bookRecord = null;
+    let tbodyClass = document.getElementsByClassName('tbodyClass');
+    for (let i = 0; i < tbodyClass.length; i++){
+	 	bookRecord = document.querySelector('#bookTable tbody:nth-child(i)');
+	 	readingPage = document.querySelector( bookRecord + ' input:nth-child(1)');
+		
+		
+        if (Number(readingPage.value) === 0) {
             //ブックマークの位置が0なら非表示
-            $('.record' + i).css('display','none');
+            $(tbody).css('display','none');
             $('#readingBooks').css('display','none');
             $('#allBooks').css('display','inline');
         }
@@ -162,7 +173,7 @@ $('#readingBooks').click(function(){
 
 // すべて表示
 $('#allBooks').click(function(){
-    $('tr').removeAttr('style');
+    $('tbody').removeAttr('style');
 $('#allBooks').css('display','none');
     $('#readingBooks').removeAttr('style');
     console.log('すべて表示完了');

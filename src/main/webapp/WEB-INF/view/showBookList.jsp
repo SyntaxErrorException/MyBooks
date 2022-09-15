@@ -17,7 +17,7 @@
 </head>
 <div id="sizeJudgment">
 	<c:if test="${empty bookList}">
-		<% response.sendRedirect("../member/noBook"); %>
+		<% response.sendRedirect("noBook"); %>
 	</c:if>
 </div>
 <body>
@@ -45,27 +45,27 @@
 			</tr>
 		</thead>
 			<c:forEach items="${bookList}" var="book" varStatus="vs">
-			<tbody>
-				<tr class="${'record' += vs.index} row1">
+			<tbody id="${'tbody' += vs.count}" class="tbodyClass">
+				<tr class="row1">
 					<td class="cover" rowspan="2"><!-- 表紙 -->
 						<img src="<c:out value="${empty book.cover? '../images/NoImage.png': book.cover}"/>"
 						alt="BOOK COVER" /></td>
-					<td class="title cell1">
+					<td class="title">
 						<!-- タイトル --> <c:out value="${book.title}" />
 					</td>
-					<td class="authors cell1">
+					<td class="authors">
 						<!-- 著者 --> <c:out value="${book.authors}" />
 					</td>
-					<td class="pageCount cell1">
+					<td class="pageCount">
 						<!-- ページ数 --> <c:out value="${book.pageCount}" />
 					</td>
 					<td>
-						<!-- ブックマーク --> <input type="number" class="readingPage cell"
+						<!-- ブックマーク --> <input type="number" class="readingPage"
 						min="0" value="<c:out value="${book.bookmark}" />">
 						<button type="button" class="update btn btn-info"
 							data-id="${book.id}">更新</button>
 					</td>
-					<td class="Progress cell1">
+					<td class="Progress">
 						<!-- 進捗 --> <fmt:formatNumber
 							value="${book.bookmark / book.pageCount * 100}" pattern="##0.0" />
 						%
@@ -76,7 +76,7 @@
 							data-id="${book.id}">読了</button>
 					</td>
 				</tr>
-				<tr class="${'record' += vs.index} row2">
+				<tr class="row2">
 					<td id="description${vs.index}" class="description" colspan="6">
 						<!-- 概要 --> <c:out value="${book.description}" />
 					</td>
@@ -86,6 +86,6 @@
 			</tbody>
 		</c:forEach>
 	</table>
-<script src="js/MyBooksJS.js"></script>
+<script src="../js/MyBooksJS.js"></script>
 </body>
 </html>
