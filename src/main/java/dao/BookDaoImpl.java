@@ -24,25 +24,11 @@ public class BookDaoImpl implements BookDao{
 	@Override
 	public void insert(Book book) throws Exception {
 		try(Connection con = ds.getConnection()){
-			
 			//SQL文の生成
 			String sql = "insert into books values ("
 					+ "NULL,?,?,?,?,?,?,?,?)";
 			//SQL文の実行準備
 			PreparedStatement stmt = con.prepareStatement(sql);
-			String strDes = book.getDescription();
-			//長い概要をカットする
-			if (strDes != null) {
-				if (strDes.length() > 511) {
-					StringBuilder d = new StringBuilder(strDes);
-					d = d.delete(511,d.length());
-					book.setDescription( d.replace(d.length() - 1,d.length(),"…").toString());
-				}
-			}
-			//coverが空文字ならnullをセットする
-			if (book.getCover().length() == 0) {
-				book.setCover(null);
-			}
 			stmt.setObject(1,book.getUserId(),Types.INTEGER);
 			stmt.setString(2,book.getTitle());
 			stmt.setString(3,book.getAuthors());
@@ -51,7 +37,6 @@ public class BookDaoImpl implements BookDao{
 			stmt.setString(6,book.getCover());
 			stmt.setObject(7,book.getIsbn());
 			stmt.setObject(8,book.getBookmark(),Types.INTEGER);
-			
 			//SQL文の実行
 			stmt.executeUpdate();
 		}catch (Exception e){
@@ -100,7 +85,7 @@ public class BookDaoImpl implements BookDao{
 		Book book = new Book();
 		try (Connection con = ds.getConnection()) {
 			//SQL文を作成して実行
-			String sql = "SELECT * FROM books WHERE user_id=?";
+			String sql = "SELECT * FROM book_db WHERE user_id=?";
 			PreparedStatement stmt = con.prepareStatement(sql);
 			stmt.setInt(1, id);
 			ResultSet rs = stmt.executeQuery();
@@ -124,7 +109,6 @@ public class BookDaoImpl implements BookDao{
 			String sql = "SELECT * FROM books WHERE user_id = ? "
 					+ "ORDER BY id DESC";
 			PreparedStatement stmt = con.prepareStatement(sql);
-			// FIXME ユーザIDベタ打ち修正必須
 			stmt.setObject(1, id);
 			ResultSet rs = stmt.executeQuery();
 			while (rs.next()) {

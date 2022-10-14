@@ -35,7 +35,6 @@ public class ShowBookList extends HttpServlet {
 			
 			// userIdを引数にしてfindByIdメソッドを実行
 			// FIXME Userを作成後に修正。それまではベタ打ちIDで対応。
-
 			List<Book> bookList = bookDao.findById(1);// 1 -> user.getId()
 			request.setAttribute("bookList", bookList);
 			
@@ -60,6 +59,14 @@ public class ShowBookList extends HttpServlet {
 		String isbn = request.getParameter("isbn");
 		String bookmark = request.getParameter("bookmark");
 
+		System.out.println("タイトル：" + title);
+		System.out.println("著者：" + authors);
+		System.out.println("ページ数：" + pageCount);
+		System.out.println("概要：" + description);
+		System.out.println("表紙：" + cover);
+		System.out.println("ISBN：" + isbn);
+		System.out.println("現在のページ：" + bookmark);
+
 		try {
 			// DAOの生成
 			BookDao bookDao = DaoFactory.createBookDao();
@@ -77,8 +84,8 @@ public class ShowBookList extends HttpServlet {
 			book.setBookmark(Integer.parseInt(bookmark));
 
 			bookDao.insert(book);
-			
 		} catch (Exception e) {
+			// TODO 自動生成された catch ブロック
 			e.printStackTrace();
 		}
 

@@ -32,5 +32,8 @@ public class Update extends HttpServlet {
 			// TODO 自動生成された catch ブロック
 			e.printStackTrace();
 		}
+		// 一覧ページに戻る
+		response.sendRedirect(request.getContextPath() + "/members/showBookList");
 	}
+
 }
